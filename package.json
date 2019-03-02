@@ -1,0 +1,29 @@
+{
+  "name": "genmo-v2",
+  "version": "0.0.1",
+  "main": "dist/genmo.js",
+  "author": "Steven Washington <washington.steven@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "babel-plugin-add-module-exports": "^1.0.0",
+    "del-cli": "^1.1.0",
+    "jest": "^24.1.0"
+  },
+  "dependencies": {},
+  "scripts": {
+    "prebuild": "yarn run clean",
+    "build": "babel src --out-dir lib",
+    "clean": "del lib",
+    "pretest": "yarn run build",
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/stories/"
+    ]
+  }
+}

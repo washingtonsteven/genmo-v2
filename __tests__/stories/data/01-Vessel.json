@@ -1,0 +1,180 @@
+{
+  "passages": [
+    {
+      "text": "you stand next to a bed made of stone in a clearing in the woods.\n\nthere are small lights flickering around in the blue-tinted, pre-dawn forest.\n\na slight breeze slides over your skin.\n\nto the east is an old woman, hunched over in gray robes. (if:!$seenOldWoman)[[[looks like she wants to talk to you->priestess]]]\n\nyou can walk:\n[[north]]\n[[west]]\n[[east]]\n[[south]]\n\n(set:$worldValue to 0)\n(set:$playerValue to 0)",
+      "links": [
+        {
+          "name": "[looks like she wants to talk to you",
+          "link": "priestess",
+          "pid": "6"
+        },
+        {
+          "name": "north",
+          "link": "north",
+          "pid": "2"
+        },
+        {
+          "name": "west",
+          "link": "west",
+          "pid": "3"
+        },
+        {
+          "name": "east",
+          "link": "east",
+          "pid": "4"
+        },
+        {
+          "name": "south",
+          "link": "south",
+          "pid": "5"
+        }
+      ],
+      "name": "Spawn",
+      "pid": "1",
+      "position": {
+        "x": "398",
+        "y": "202"
+      }
+    },
+    {
+      "text": "[[It's a dead end->Spawn]]",
+      "links": [
+        {
+          "name": "It's a dead end",
+          "link": "Spawn",
+          "pid": "1"
+        }
+      ],
+      "name": "north",
+      "pid": "2",
+      "position": {
+        "x": "402",
+        "y": "49"
+      }
+    },
+    {
+      "text": "[[It's a dead end->Spawn]]",
+      "links": [
+        {
+          "name": "It's a dead end",
+          "link": "Spawn",
+          "pid": "1"
+        }
+      ],
+      "name": "west",
+      "pid": "3",
+      "position": {
+        "x": "127",
+        "y": "191"
+      }
+    },
+    {
+      "text": "(set: _passageLuck to (either: 1, -1))\n\nyou travel the eastward path.\n\nthe day grows, sunlight shines through the trees, the early blue glow and the ethereal lights disappear.\n\nyou trip slightly on an exposed root (if: _passageLuck is 1)[but catch yourself before getting too badly hurt.](else:)[and you land on your knee, skinning it a bit.]\n\n[[continue->eastward]]\n\n(set: $playerValue to $playerValue + _passageLuck)",
+      "links": [
+        {
+          "name": "continue",
+          "link": "eastward",
+          "pid": "8"
+        }
+      ],
+      "name": "east",
+      "pid": "4",
+      "position": {
+        "x": "705",
+        "y": "203"
+      }
+    },
+    {
+      "text": "[[It's a dead end->Spawn]]",
+      "links": [
+        {
+          "name": "It's a dead end",
+          "link": "Spawn",
+          "pid": "1"
+        }
+      ],
+      "name": "south",
+      "pid": "5",
+      "position": {
+        "x": "399",
+        "y": "419"
+      }
+    },
+    {
+      "text": "you walk over to the woman.\n\n\"hmm...you're back. good.\"\n\nshe walks over to a tree, breaking off a golden leaf, handing it to you.\n\n\"here, you'll need this.\"\n\n[[take the leaf]]\n\n(set: $seenOldWoman to true)",
+      "links": [
+        {
+          "name": "take the leaf",
+          "link": "take the leaf",
+          "pid": "7"
+        }
+      ],
+      "name": "priestess",
+      "pid": "6",
+      "position": {
+        "x": "288",
+        "y": "298"
+      }
+    },
+    {
+      "text": "you touch the leaf, instantly you feel it crumble. the pieces are absorbed into your palm. they feel warm.\n\n\"you are ready. go to the canyon.\"\n\nshe hobbles over to a tree stump and sits down. \n\n\"i'll be here, waiting for the next time.\" she says.\n\n[[leave her be->Spawn]]",
+      "links": [
+        {
+          "name": "leave her be",
+          "link": "Spawn",
+          "pid": "1"
+        }
+      ],
+      "name": "take the leaf",
+      "pid": "7",
+      "position": {
+        "x": "513",
+        "y": "301"
+      }
+    },
+    {
+      "text": "you travel through the woods for an hour, at a leisurely pace. trees rustle in the breeze as the heat of the day comes up upon you. you wipe a slight layer of sweat from your forehead as you stroll along.\n\na rustling to your right causes you to stop, sounding closer than anything you've heard yet. you turn to watch a deer emerge from the bush. it begins to cross the path, seemingly giving you no notice. its antlers were largely spread and regal, but also splattered with the blackness of dried blood. the creature took heavy breaths as its sinewy muscle flexed under its furred skin.\n\nit turns to look at you.\n\n[[you freeze, and let it pass->deer crossing]]\n\n[[you step forward, staring back->deer interaction]]\n",
+      "links": [
+        {
+          "name": "you freeze, and let it pass",
+          "link": "deer crossing",
+          "pid": "9"
+        },
+        {
+          "name": "you step forward, staring back",
+          "link": "deer interaction",
+          "pid": "10"
+        }
+      ],
+      "name": "eastward",
+      "pid": "8",
+      "position": {
+        "x": "856",
+        "y": "209"
+      }
+    },
+    {
+      "text": "Double-click this passage to edit it.",
+      "name": "deer crossing",
+      "pid": "9",
+      "position": {
+        "x": "993",
+        "y": "307"
+      }
+    },
+    {
+      "text": "Double-click this passage to edit it.",
+      "name": "deer interaction",
+      "pid": "10",
+      "position": {
+        "x": "991",
+        "y": "97"
+      }
+    }
+  ],
+  "name": "Vessel",
+  "startnode": "1",
+  "creator": "Twine",
+  "creator-version": "2.2.1",
+  "ifid": "342260FC-4EC0-49AE-955A-EB04C784C357"
+}

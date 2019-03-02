@@ -1,0 +1,171 @@
+{
+  "passages": [
+    {
+      "text": "This is the beginning of the song\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind]]",
+      "links": [
+        {
+          "name": "I'm hearing voices",
+          "link": "I'm hearing voices",
+          "pid": "2"
+        },
+        {
+          "name": "Animal noises",
+          "link": "Animal noises",
+          "pid": "3"
+        },
+        {
+          "name": "Creme de la creme",
+          "link": "Creme de la creme",
+          "pid": "4"
+        },
+        {
+          "name": "Effeminate abyss",
+          "link": "Effeminate abyss",
+          "pid": "5"
+        },
+        {
+          "name": "And I'm reaching my threshold",
+          "link": "And I'm reaching my threshold",
+          "pid": "6"
+        },
+        {
+          "name": "Staring at the truth til I'm blind",
+          "link": "Staring at the truth til I'm blind",
+          "pid": "7"
+        }
+      ],
+      "name": "Start",
+      "pid": "1",
+      "position": {
+        "x": "412",
+        "y": "200"
+      }
+    },
+    {
+      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        },
+        {
+          "name": "Animal noises",
+          "link": "Animal noises",
+          "pid": "3"
+        }
+      ],
+      "name": "I'm hearing voices",
+      "pid": "2",
+      "position": {
+        "x": "37",
+        "y": "350"
+      }
+    },
+    {
+      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\n---\n\n[[Start]]\n[[Creme de la creme]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        },
+        {
+          "name": "Creme de la creme",
+          "link": "Creme de la creme",
+          "pid": "4"
+        }
+      ],
+      "name": "Animal noises",
+      "pid": "3",
+      "position": {
+        "x": "187",
+        "y": "350"
+      }
+    },
+    {
+      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n---\n\n[[Start]]\n[[Effeminate abyss]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        },
+        {
+          "name": "Effeminate abyss",
+          "link": "Effeminate abyss",
+          "pid": "5"
+        }
+      ],
+      "name": "Creme de la creme",
+      "pid": "4",
+      "position": {
+        "x": "337",
+        "y": "350"
+      }
+    },
+    {
+      "text": "Yoohoo!\n\nThe greeting echoes\n\nDown here, kid!\n\nYou look down.\n\nHey!\n\nHi.\n\n...\n\nCool.\n\n---\n\n[[Start]] \n[[And I'm reaching my threshold]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        },
+        {
+          "name": "And I'm reaching my threshold",
+          "link": "And I'm reaching my threshold",
+          "pid": "6"
+        }
+      ],
+      "name": "Effeminate abyss",
+      "pid": "5",
+      "position": {
+        "x": "487",
+        "y": "350"
+      }
+    },
+    {
+      "text": "I swear, Alice, one of these days.\n\nBANG!\n\nZOOM!\n\nWe're going to Mars because I got a substantial raise at work.\n\nOh honey!\n\n---\n\n[[Start]] \n[[Staring at the truth til I'm blind]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        },
+        {
+          "name": "Staring at the truth til I'm blind",
+          "link": "Staring at the truth til I'm blind",
+          "pid": "7"
+        }
+      ],
+      "name": "And I'm reaching my threshold",
+      "pid": "6",
+      "position": {
+        "x": "637",
+        "y": "350"
+      }
+    },
+    {
+      "text": "Today's the eclipse! Did you get your glasses?\n\nEclipse glasses are a scam from big glasses to sell more glasses.\n\nYour funeral.\n\n---\n\n[[Start]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Staring at the truth til I'm blind",
+      "pid": "7",
+      "position": {
+        "x": "787",
+        "y": "350"
+      }
+    }
+  ],
+  "name": "GenmoTest",
+  "startnode": "1",
+  "creator": "Twine",
+  "creator-version": "2.2.1",
+  "ifid": "2DEC574C-F71F-4A11-A57D-869A5C1C938F"
+}
