@@ -44,8 +44,27 @@ describe("basic navigation", () => {
   });
 
   test("link not found warning", () => {
-    expect(genmo.followLink(Math.floor(Math.random() * 1000)) + 5000).toEqual(
+    expect(genmo.followLink(Math.floor(Math.random() * 1000) + 5000)).toEqual(
       ERRORS.LinkNotFoundError.type
     );
+  });
+});
+
+describe("data update", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: outputPid,
+      errorFunction: outputErrorType
+    });
+  });
+
+  test("data properly set", () => {
+    genmo.followLink(GenmoTest.passages[1].pid);
+    expect(genmo.state.data).toEqual({
+      s: -2,
+      d: 5,
+      c: "a string guvna"
+    });
   });
 });

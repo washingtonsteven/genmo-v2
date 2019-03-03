@@ -1,5 +1,5 @@
 import StatefulComponent from "./state/stateful-component";
-import { ACTIONS as actions, reducers } from "./state/genmo-reducers";
+import { ACTIONS as actions, reducers, DIVIDER } from "./state/genmo-reducers";
 
 export const ERRORS = {
   InvalidLinkError: {
@@ -30,7 +30,8 @@ export class Genmo extends StatefulComponent {
             return null;
 
           return storyData.passages.find(p => p.pid === storyData.startnode);
-        })()
+        })(),
+        data: {}
       },
       reducers
     );
@@ -52,7 +53,7 @@ export class Genmo extends StatefulComponent {
   }
   getPassageText(passage) {
     if (!passage || !passage.text) return null;
-    const parts = passage.text.split("\n---\n");
+    const parts = passage.text.split(DIVIDER);
     return parts[0];
   }
   followLink(link, callback) {

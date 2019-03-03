@@ -49,11 +49,10 @@ import { Genmo } from "genmo-v2";
 import StoryJSON from "story.json";
 
 const story = new Genmo(StoryJSON, {
-  /* options */
-  outputFunction: function(passage) {
+  outputFunction: (passage) => {
     // output passage
-  }
-  errorFunction: function(err) {
+  },
+  errorFunction: (err) => {
     // deal with error
   }
 })
