@@ -1,4 +1,9 @@
 {
   "presets": ["@babel/env"],
-  "plugins": ["add-module-exports"]
+  "plugins": ["add-module-exports"],
+  "env": {
+    "development": {
+      "sourceMaps": "inline"
+    }
+  }
 }

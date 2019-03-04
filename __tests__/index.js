@@ -68,3 +68,33 @@ describe("data update", () => {
     });
   });
 });
+
+describe("conditional links", () => {
+  let genmo;
+  const badlink = [
+    {
+      name: "Staring at the truth til I'm blind",
+      link: "Staring at the truth til I'm blind",
+      pid: "7"
+    }
+  ];
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: passage => passage.links,
+      errorFunction: outputErrorType
+    });
+  });
+
+  test("invalid link is not there", () => {
+    const links = genmo.outputCurrentPassage();
+    expect(links).toEqual(expect.not.arrayContaining(badlink));
+  });
+
+  test("valid link after proper navigation", () => {
+    genmo.followLink("2");
+    genmo.followLink("1");
+    expect(genmo.outputCurrentPassage()).toEqual(
+      expect.arrayContaining(badlink)
+    );
+  });
+});

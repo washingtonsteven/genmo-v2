@@ -1,7 +1,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind]]",
+      "text": "This is the beginning of the song\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -29,7 +29,7 @@
           "pid": "6"
         },
         {
-          "name": "Staring at the truth til I'm blind",
+          "name": "Staring at the truth til I'm blind||d gte 3",
           "link": "Staring at the truth til I'm blind",
           "pid": "7"
         }
@@ -79,8 +79,8 @@
       "name": "Animal noises",
       "pid": "3",
       "position": {
-        "x": "187",
-        "y": "350"
+        "x": "110.33333333333333",
+        "y": "465"
       }
     },
     {
@@ -100,8 +100,8 @@
       "name": "Creme de la creme",
       "pid": "4",
       "position": {
-        "x": "337",
-        "y": "350"
+        "x": "243.66666666666666",
+        "y": "556.6666666666667"
       }
     },
     {
@@ -121,8 +121,8 @@
       "name": "Effeminate abyss",
       "pid": "5",
       "position": {
-        "x": "487",
-        "y": "350"
+        "x": "513.6666666666666",
+        "y": "543.3333333333334"
       }
     },
     {
@@ -142,8 +142,8 @@
       "name": "And I'm reaching my threshold",
       "pid": "6",
       "position": {
-        "x": "637",
-        "y": "350"
+        "x": "685.3333333333334",
+        "y": "516.6666666666667"
       }
     },
     {

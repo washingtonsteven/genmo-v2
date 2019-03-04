@@ -20,6 +20,10 @@ export const ERRORS = {
   }
 };
 
+const CONDITION_REGEX = /(.+)\s(.+)\s(.+)/;
+
+const numberOperators = ["lt", "gt", "lte", "gte"];
+
 export class Genmo extends StatefulComponent {
   constructor(storyData, opts = {}) {
     super(
@@ -46,10 +50,20 @@ export class Genmo extends StatefulComponent {
       opts.errorFunction || (console && console.warn) || this.noop;
   }
   outputCurrentPassage() {
-    return this.outputFunction({
-      passageText: this.getPassageText(this.state.currentPassage),
+    return this.outputFunction(this.getCurrentPassage());
+  }
+  getCurrentPassage() {
+    const passage = {
       ...this.state.currentPassage
-    });
+    };
+
+    passage.passageText = this.getPassageText(passage);
+
+    passage.links = passage.links
+      .map(link => this.linkFilter(link))
+      .filter(l => l);
+
+    return passage;
   }
   getPassageText(passage) {
     if (!passage || !passage.text) return null;
@@ -94,6 +108,71 @@ export class Genmo extends StatefulComponent {
       link: activeLink,
       nextPassage
     });
+  }
+  linkFilter(link) {
+    const filteredLink = { ...link };
+    const data = { ...this.state.data };
+    const linkNameParts = filteredLink.name.split("||");
+
+    if (linkNameParts.length < 2) return filteredLink;
+
+    const linkName = linkNameParts[0];
+    const [
+      condition,
+      variable,
+      operator,
+      ref,
+      ...otherMatch
+    ] = linkNameParts[1].match(CONDITION_REGEX);
+
+    filteredLink.name = linkName;
+
+    if (!data[variable]) {
+      return null;
+    }
+
+    if (numberOperators.indexOf(operator) >= 0) {
+      if (isNaN(Number(data[variable])) || isNaN(Number(ref))) {
+        return null;
+      }
+    }
+
+    switch (operator) {
+      case "gte": {
+        if (Number(data[variable]) >= Number(ref)) {
+          return filteredLink;
+        }
+      }
+      case "lte": {
+        if (Number(data[variable]) <= Number(ref)) {
+          return filteredLink;
+        }
+      }
+      case "lt": {
+        if (Number(data[variable]) < Number(ref)) {
+          return filteredLink;
+        }
+      }
+      case "gt": {
+        if (Number(data[variable]) < Number(ref)) {
+          return filteredLink;
+        }
+      }
+      case "eq": {
+        if (data[variable] == ref) {
+          return filteredLink;
+        }
+      }
+      case "seq": {
+        // strict equals
+        if (data[variable] === ref) {
+          return filteredLink;
+        }
+      }
+      default: {
+        return null;
+      }
+    }
   }
   noop() {}
 }

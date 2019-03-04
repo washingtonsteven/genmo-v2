@@ -40,6 +40,72 @@ Normal passage text.
 
 This will generate a `passageText` variable on each passage that only has the text above that divider.
 
+#### Story Data
+
+You can update story data upon entering a passage by including a JSON object describing the data you want to change under the links with a similar separator for the link
+
+```
+Normal passage text.
+
+---
+
+[[Page 2]]
+[[Page 3]]
+
+---
+{
+  "hp":10,
+  "wizard_staff": true,
+  "player_name": "Steve"
+}
+
+```
+
+Data is cumulative, so you don't need to specify the entire data object in each passage. You can use `++` or `--` prefixes to increment/decrement a variable by a value:
+
+```
+The orc hits you for 2 damage!
+
+---
+
+[[Fight back]]
+
+---
+
+{
+  "hp":"--2"
+}
+```
+
+After the last two example blocks, `hp` will be set to `8`
+
+#### Conditional Links
+
+You can use named links (using `->`) in order to specify conditions for the link to appear, separated from the name with `||`:
+
+```
+Normal passage text
+
+---
+
+[[Go home]]
+[[Go to the hospital||hp lt 10->Go to the hospital]]
+```
+
+This will only display `Go to the hospital` if the variable `hp` is less than `10`
+
+The operators available are: 
+  - `lt`: less than
+  - `gt`: greater than
+  - `lte`: less than or equal
+  - `gte`: greater than or equal
+  - `eq`: equals
+  - `seq`: strict equals (`===`)
+
+`lt`, `gt`, `lte`, and `gte` will convert any variable to a Number before comparison.
+
+The displayed name will also have anything after `||` removed before display/`outputFunction`
+
 ### Usage
 
 ```js
