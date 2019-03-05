@@ -1,5 +1,3 @@
-import { filter } from "rsvp";
-
 const CONDITION_REGEX = /(.+)\s(.+)\s(.+)/;
 
 const numberOperators = ["lt", "gt", "lte", "gte"];
