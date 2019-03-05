@@ -1,28 +1,6 @@
 import StatefulComponent from "./state/stateful-component";
 import { ACTIONS as actions, reducers, DIVIDER } from "./state/genmo-reducers";
-
-export const ERRORS = {
-  InvalidLinkError: {
-    type: "InvalidLinkError",
-    code: 1,
-    message: "Link supplied to followLink was invalid."
-  },
-  LinkNotFoundError: {
-    type: "LinkNotFoundError",
-    code: 2,
-    message:
-      "Tried to activate a link, but it wasn't present on the currentPassage"
-  },
-  PassageNotFoundError: {
-    type: "PassageNotFoundError",
-    code: 3,
-    message: "Could not find passage"
-  }
-};
-
-const CONDITION_REGEX = /(.+)\s(.+)\s(.+)/;
-
-const numberOperators = ["lt", "gt", "lte", "gte"];
+import { linkFilter, ERRORS } from "./utils";
 
 export class Genmo extends StatefulComponent {
   constructor(storyData, opts = {}) {
@@ -60,7 +38,7 @@ export class Genmo extends StatefulComponent {
     passage.passageText = this.getPassageText(passage);
 
     passage.links = passage.links
-      .map(link => this.linkFilter(link))
+      .map(link => linkFilter(link, this.state.data))
       .filter(l => l);
 
     return passage;
@@ -70,7 +48,7 @@ export class Genmo extends StatefulComponent {
     const parts = passage.text.split(DIVIDER);
     return parts[0];
   }
-  followLink(link, callback) {
+  followLink(link, callback, ...callbackArgs) {
     if (!link) {
       return this.errorFunction({
         ...ERRORS.InvalidLinkError,
@@ -103,76 +81,15 @@ export class Genmo extends StatefulComponent {
       });
     }
 
-    this.doAction({
-      ...actions.FOLLOW_LINK,
-      link: activeLink,
-      nextPassage
-    });
-  }
-  linkFilter(link) {
-    const filteredLink = { ...link };
-    const data = { ...this.state.data };
-    const linkNameParts = filteredLink.name.split("||");
-
-    if (linkNameParts.length < 2) return filteredLink;
-
-    const linkName = linkNameParts[0];
-    const [
-      condition,
-      variable,
-      operator,
-      ref,
-      ...otherMatch
-    ] = linkNameParts[1].match(CONDITION_REGEX);
-
-    filteredLink.name = linkName;
-
-    if (!data[variable]) {
-      return null;
-    }
-
-    if (numberOperators.indexOf(operator) >= 0) {
-      if (isNaN(Number(data[variable])) || isNaN(Number(ref))) {
-        return null;
-      }
-    }
-
-    switch (operator) {
-      case "gte": {
-        if (Number(data[variable]) >= Number(ref)) {
-          return filteredLink;
-        }
-      }
-      case "lte": {
-        if (Number(data[variable]) <= Number(ref)) {
-          return filteredLink;
-        }
-      }
-      case "lt": {
-        if (Number(data[variable]) < Number(ref)) {
-          return filteredLink;
-        }
-      }
-      case "gt": {
-        if (Number(data[variable]) < Number(ref)) {
-          return filteredLink;
-        }
-      }
-      case "eq": {
-        if (data[variable] == ref) {
-          return filteredLink;
-        }
-      }
-      case "seq": {
-        // strict equals
-        if (data[variable] === ref) {
-          return filteredLink;
-        }
-      }
-      default: {
-        return null;
-      }
-    }
+    this.doAction(
+      {
+        ...actions.FOLLOW_LINK,
+        link: activeLink,
+        nextPassage
+      },
+      callback,
+      ...callbackArgs
+    );
   }
   noop() {}
 }

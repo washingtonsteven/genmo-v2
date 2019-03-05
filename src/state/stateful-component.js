@@ -23,14 +23,14 @@ class StatefulComponent {
 
     this.doCallback(callback);
   }
-  doAction(action, callback) {
+  doAction(action, callback, ...callbackArgs) {
     let updatedState = this.state;
     this.reducers.forEach(r => {
       this.setState(r(updatedState, action));
     });
     this.actions.push(action);
 
-    this.doCallback(callback);
+    this.doCallback(callback, ...callbackArgs);
   }
   doCallback(callback, ...args) {
     if (typeof callback === "function") callback(...args);

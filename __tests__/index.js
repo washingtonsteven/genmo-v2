@@ -1,4 +1,5 @@
-const { Genmo, ERRORS } = require("../lib");
+const { Genmo } = require("../lib");
+const { ERRORS } = require("../src/utils");
 const { GenmoTest } = require("./stories");
 
 const outputPid = ({ pid }) => pid;
