@@ -99,3 +99,31 @@ describe("conditional links", () => {
     );
   });
 });
+
+describe("variable interpolation", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: passage => passage.passageText,
+      errorFunction: outputErrorType
+    });
+  });
+
+  const expectedOutputWithData = "s is -2\nd is 5\nc is a string guvna";
+  const expectedOutputWithoutData = "s is #{s}\nd is #{d}\nc is #{c}";
+
+  test("data is output when set", () => {
+    genmo.followLink("2");
+    genmo.followLink("3");
+    expect(genmo.outputCurrentPassage()).toEqual(
+      expect.stringContaining(expectedOutputWithData)
+    );
+  });
+
+  test("Match is left alone when not set", () => {
+    genmo.followLink("3");
+    expect(genmo.outputCurrentPassage()).toEqual(
+      expect.stringContaining(expectedOutputWithoutData)
+    );
+  });
+});

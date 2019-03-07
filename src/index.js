@@ -1,6 +1,6 @@
-import StatefulComponent from "./state/stateful-component";
-import { ACTIONS as actions, reducers, DIVIDER } from "./state/genmo-reducers";
-import { linkFilter, ERRORS } from "./utils";
+import StatefulComponent from "./state/statefulComponent";
+import { ACTIONS as actions, reducers, DIVIDER } from "./state/genmoReducers";
+import { linkFilter, ERRORS, replaceVariables } from "./utils";
 
 export class Genmo extends StatefulComponent {
   constructor(storyData, opts = {}) {
@@ -46,7 +46,9 @@ export class Genmo extends StatefulComponent {
   getPassageText(passage) {
     if (!passage || !passage.text) return null;
     const parts = passage.text.split(DIVIDER);
-    return parts[0];
+    const text = parts[0];
+
+    return replaceVariables(text, this.state.data);
   }
   followLink(link, callback, ...callbackArgs) {
     if (!link) {

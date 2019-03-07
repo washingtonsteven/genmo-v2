@@ -18,7 +18,8 @@
     "build": "babel src --out-dir lib",
     "clean": "del lib",
     "pretest": "yarn run build",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "jest": {
     "testPathIgnorePatterns": [

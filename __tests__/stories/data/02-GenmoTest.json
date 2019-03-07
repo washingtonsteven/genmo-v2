@@ -63,7 +63,7 @@
       }
     },
     {
-      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\n---\n\n[[Start]]\n[[Creme de la creme]] ",
+      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is #{s}\nd is #{d}\nc is #{c}\n\n---\n\n[[Start]]\n[[Creme de la creme]] ",
       "links": [
         {
           "name": "Start",
@@ -79,7 +79,7 @@
       "name": "Animal noises",
       "pid": "3",
       "position": {
-        "x": "110.33333333333333",
+        "x": "110",
         "y": "465"
       }
     },
@@ -100,8 +100,8 @@
       "name": "Creme de la creme",
       "pid": "4",
       "position": {
-        "x": "243.66666666666666",
-        "y": "556.6666666666667"
+        "x": "243",
+        "y": "556"
       }
     },
     {
@@ -121,8 +121,8 @@
       "name": "Effeminate abyss",
       "pid": "5",
       "position": {
-        "x": "513.6666666666666",
-        "y": "543.3333333333334"
+        "x": "513",
+        "y": "543"
       }
     },
     {
@@ -142,8 +142,8 @@
       "name": "And I'm reaching my threshold",
       "pid": "6",
       "position": {
-        "x": "685.3333333333334",
-        "y": "516.6666666666667"
+        "x": "685",
+        "y": "516"
       }
     },
     {
