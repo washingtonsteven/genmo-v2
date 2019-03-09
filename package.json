@@ -1,7 +1,7 @@
 {
   "name": "genmo-v2",
   "version": "0.0.1",
-  "main": "dist/genmo.js",
+  "main": "lib/index.js",
   "author": "Steven Washington <washington.steven@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -19,7 +19,8 @@
     "clean": "del lib",
     "pretest": "yarn run build",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "install": "npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [
