@@ -1,6 +1,6 @@
 {
   "name": "@esaevian/genmo-v2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "author": "Steven Washington <washington.steven@gmail.com>",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "pretest": "yarn run build",
     "test": "jest",
     "coverage": "jest --coverage",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [
