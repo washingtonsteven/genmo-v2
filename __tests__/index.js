@@ -127,3 +127,41 @@ describe("variable interpolation", () => {
     );
   });
 });
+
+describe("prompt", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: passage => passage.needsPrompt,
+      errorFunction: outputErrorType
+    });
+  });
+
+  test("Receive proper prompt", () => {
+    genmo.followLink("4");
+    const prompts = genmo.outputCurrentPassage();
+    expect(prompts.filter(p => !p.complete).length).toBeGreaterThan(0);
+  });
+
+  test("Respond Properly", () => {
+    genmo.followLink("4");
+    const prompts = genmo.outputCurrentPassage();
+    const promptValue = "Steve";
+    genmo.respondToPrompt({
+      [prompts[0].key]: promptValue
+    });
+    expect(genmo.state.data[prompts[0].key]).toBe(promptValue);
+  });
+
+  test("Navigation doesn't reset prompt needs", () => {
+    genmo.followLink("4");
+    genmo.respondToPrompt({
+      name: promptValue
+    });
+    genmo.followLink("1");
+    genmo.followLink("4");
+    expect(genmo.outputCurrentPassage().filter(p => !p.complete).length).toBe(
+      1
+    );
+  });
+});

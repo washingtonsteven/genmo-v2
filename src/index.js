@@ -93,5 +93,24 @@ export class Genmo extends StatefulComponent {
       ...callbackArgs
     );
   }
+  respondToPrompt(response, callback, ...callbackArgs) {
+    const responseEntries = Object.entries(response);
+    const [key, value] = (() => {
+      if (responseEntries.length) {
+        return responseEntries[0];
+      }
+      return [null, null];
+    })();
+    this.doAction(
+      {
+        ...actions.PROMPT_ANSWER,
+        key,
+        value,
+        pid: this.state.currentPassage.pid
+      },
+      callback,
+      ...callbackArgs
+    );
+  }
   noop() {}
 }

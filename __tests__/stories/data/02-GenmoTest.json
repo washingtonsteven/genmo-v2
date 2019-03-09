@@ -1,7 +1,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]",
+      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -84,7 +84,7 @@
       }
     },
     {
-      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n---\n\n[[Start]]\n[[Effeminate abyss]] ",
+      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
       "links": [
         {
           "name": "Start",

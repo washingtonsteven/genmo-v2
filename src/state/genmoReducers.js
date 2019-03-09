@@ -2,6 +2,10 @@ export const ACTIONS = {
   FOLLOW_LINK: {
     type: "FOLLOW_LINK",
     link: null
+  },
+  PROMPT_ANSWER: {
+    type: "PROMPT_ANSWER",
+    data: {}
   }
 };
 
@@ -44,6 +48,15 @@ function followLinkReducer(state, action) {
         } else {
           if (value === "null") {
             data[key] = null;
+          } else if (value === ">>") {
+            if (!data[key]) {
+              if (!currentPassage.needsPrompt) currentPassage.needsPrompt = [];
+              const keyIndex = currentPassage.needsPrompt.findIndex(
+                p => p.key === key
+              );
+
+              if (keyIndex < 0) currentPassage.needsPrompt.push({ key });
+            }
           } else {
             data[key] = value;
           }
@@ -59,4 +72,31 @@ function followLinkReducer(state, action) {
   }
 }
 
-export const reducers = [followLinkReducer];
+function promptAnswerReducer(state = {}, action) {
+  if (action.type === ACTIONS.PROMPT_ANSWER.type) {
+    const newState = {
+      ...state
+    };
+    const targetPassage = newState.storyData.passages.find(
+      p => p.pid === action.pid
+    );
+
+    targetPassage.needsPrompt = targetPassage.needsPrompt.map(prompt => {
+      if (prompt.key === action.key) {
+        return { ...prompt, complete: true };
+      }
+      return prompt;
+    });
+
+    newState.currentPassage = targetPassage;
+
+    newState.data = {
+      ...newState.data,
+      [action.key]: action.value
+    };
+
+    return newState;
+  }
+}
+
+export const reducers = [followLinkReducer, promptAnswerReducer];
