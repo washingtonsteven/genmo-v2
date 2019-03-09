@@ -1,5 +1,5 @@
 {
-  "name": "genmo-v2",
+  "name": "@esaevian/genmo-v2",
   "version": "0.0.1",
   "main": "lib/index.js",
   "author": "Steven Washington <washington.steven@gmail.com>",
@@ -27,5 +27,17 @@
       "/node_modules/",
       "/stories/"
     ]
-  }
+  },
+  "description": "## New, updated, sleeker, sexier, adjectivier, and cheesier than ever! 🧀",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/washingtonsteven/genmo-v2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/washingtonsteven/genmo-v2/issues"
+  },
+  "homepage": "https://github.com/washingtonsteven/genmo-v2#readme"
 }
