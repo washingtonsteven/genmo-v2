@@ -127,7 +127,7 @@ Normal passage text.
 
 This will cause Genmo to return a passage object that will indicate that `player_name` needs input from the player. Otherwise, any instance of `#{player_name}` in `passageText` will not be replaced.
 
-See [respondToPrompt](#respond-to-prompt-object) for the API on how to properly log player responses.
+See [respondToPrompt](#respondtopromptobject) for the API on how to properly log player responses.
 
 #### Conditional Links
 
