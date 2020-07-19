@@ -9,6 +9,10 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
 ## Table of Contents
 
   * [Generating Stories](#generating-stories)
+    * [Story Data](#story-data)
+    * [Inserting data into text](#inserting-data-into-text)
+    * [Prompting for data](#prompting-for-data)
+    * [Conditional Links](#conditional-links)
   * [Usage](#usage)
     * [Options](#options)
         * [outputFunction](#outputfunction)
@@ -17,6 +21,7 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
     * [new Genmo(storyData, options = {})](#new-genmostorydata-options--)
     * [outputCurrentPassage()](#outputcurrentpassage)
     * [followLink(Object|String)](#followlinkobjectstring)
+    * [respondToprompt(Object)](#respondtopromptobject)
     * [state](#state)
 
 ---
@@ -79,7 +84,7 @@ The orc hits you for 2 damage!
 
 After the last two example blocks, `hp` will be set to `8`
 
-#### Inserting data into text.
+#### Inserting data into text
 
 Data can be insert into the passage text by wrapping the variable name in `#{<variableName>}`. For example:
 
