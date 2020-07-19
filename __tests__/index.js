@@ -24,13 +24,13 @@ describe("basic navigation", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: outputPid,
-      errorFunction: outputErrorType
+      errorFunction: outputErrorType,
     });
   });
 
   test("output starting node", () => {
     expect(genmo.outputCurrentPassage()).toBe(
-      GenmoTest.passages.find(p => p.pid === GenmoTest.startnode).pid
+      GenmoTest.passages.find((p) => p.pid === GenmoTest.startnode).pid
     );
   });
 
@@ -56,7 +56,7 @@ describe("data update", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: outputPid,
-      errorFunction: outputErrorType
+      errorFunction: outputErrorType,
     });
   });
 
@@ -65,7 +65,7 @@ describe("data update", () => {
     expect(genmo.state.data).toEqual({
       s: -2,
       d: 5,
-      c: "a string guvna"
+      c: "a string guvna",
     });
   });
 });
@@ -76,13 +76,13 @@ describe("conditional links", () => {
     {
       name: "Staring at the truth til I'm blind",
       link: "Staring at the truth til I'm blind",
-      pid: "7"
-    }
+      pid: "7",
+    },
   ];
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
-      outputFunction: passage => passage.links,
-      errorFunction: outputErrorType
+      outputFunction: (passage) => passage.links,
+      errorFunction: outputErrorType,
     });
   });
 
@@ -104,8 +104,8 @@ describe("variable interpolation", () => {
   let genmo;
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
-      outputFunction: passage => passage.passageText,
-      errorFunction: outputErrorType
+      outputFunction: (passage) => passage.passageText,
+      errorFunction: outputErrorType,
     });
   });
 
@@ -132,15 +132,15 @@ describe("prompt", () => {
   let genmo;
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
-      outputFunction: passage => passage.needsPrompt,
-      errorFunction: outputErrorType
+      outputFunction: (passage) => passage.needsPrompt,
+      errorFunction: outputErrorType,
     });
   });
 
   test("Receive proper prompt", () => {
     genmo.followLink("4");
     const prompts = genmo.outputCurrentPassage();
-    expect(prompts.filter(p => !p.complete).length).toBeGreaterThan(0);
+    expect(prompts.filter((p) => !p.complete).length).toBeGreaterThan(0);
   });
 
   test("Respond Properly", () => {
@@ -148,19 +148,20 @@ describe("prompt", () => {
     const prompts = genmo.outputCurrentPassage();
     const promptValue = "Steve";
     genmo.respondToPrompt({
-      [prompts[0].key]: promptValue
+      [prompts[0].key]: promptValue,
     });
     expect(genmo.state.data[prompts[0].key]).toBe(promptValue);
   });
 
   test("Navigation doesn't reset prompt needs", () => {
+    const promptValue = "Steve";
     genmo.followLink("4");
     genmo.respondToPrompt({
-      name: promptValue
+      name: promptValue,
     });
     genmo.followLink("1");
     genmo.followLink("4");
-    expect(genmo.outputCurrentPassage().filter(p => !p.complete).length).toBe(
+    expect(genmo.outputCurrentPassage().filter((p) => !p.complete).length).toBe(
       1
     );
   });
