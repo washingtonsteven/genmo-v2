@@ -1,6 +1,6 @@
 {
   "name": "@esaevian/genmo-v2",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "lib/index.js",
   "author": "Steven Washington <washington.steven@gmail.com>",
   "license": "MIT",
@@ -10,7 +10,8 @@
     "@babel/preset-env": "^7.3.4",
     "babel-plugin-add-module-exports": "^1.0.0",
     "del-cli": "^1.1.0",
-    "jest": "^24.1.0"
+    "jest": "^24.1.0",
+    "parcel-bundler": "^1.12.4"
   },
   "dependencies": {},
   "scripts": {
@@ -20,7 +21,10 @@
     "pretest": "yarn run build",
     "test": "jest",
     "coverage": "jest --coverage",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "clean-bundle": "del bundle",
+    "prebundle": "yarn run clean-bundle",
+    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting"
   },
   "jest": {
     "testPathIgnorePatterns": [
