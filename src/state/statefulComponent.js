@@ -10,7 +10,7 @@ class StatefulComponent {
 
     this.reducers = this.reducers
       .concat(fn)
-      .filter(f => typeof f === "function");
+      .filter((f) => typeof f === "function");
   }
   setState(newState, callback) {
     if (typeof newState === "function") {
@@ -18,16 +18,17 @@ class StatefulComponent {
     }
     this.state = {
       ...this.state,
-      ...newState
+      ...newState,
     };
 
     this.doCallback(callback);
   }
   doAction(action, callback, ...callbackArgs) {
     let updatedState = this.state;
-    this.reducers.forEach(r => {
-      this.setState(r(updatedState, action));
+    this.reducers.forEach((r) => {
+      updatedState = r(updatedState, action);
     });
+    this.setState(updatedState);
     this.actions.push(action);
 
     this.doCallback(callback, ...callbackArgs);

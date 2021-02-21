@@ -1,4 +1,4 @@
-const { Genmo } = require("../lib");
+const { Genmo } = require("../src");
 const { ERRORS } = require("../src/utils");
 const { GenmoTest } = require("./stories");
 
@@ -163,6 +163,59 @@ describe("prompt", () => {
     genmo.followLink("4");
     expect(genmo.outputCurrentPassage().filter((p) => !p.complete).length).toBe(
       1
+    );
+  });
+});
+
+describe.only("inventory", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: outputPid,
+      errorFunction: outputErrorType,
+    });
+  });
+
+  /*
+  Add inv single key, (passage 1, coin) -> Multiple times?
+  remove inv single key (passage 2, coin)
+  add inv array (passage 3, book/toothpaste)
+  remove inv array (passage 7, book/toothpaste)
+  remove nonexistent to negative (passage 6, headphones)
+  */
+  test("Add to inventory", () => {
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        coin: 1,
+      })
+    );
+  });
+
+  test("Add to inventory multiple times", () => {
+    genmo.followLink("5");
+    genmo.followLink("1");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        coin: 2,
+      })
+    );
+  });
+
+  test("Remove from inventory", () => {
+    genmo.followLink("2");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        coin: 0,
+      })
+    );
+  });
+
+  test("Remove from inventory goes negative", () => {
+    genmo.followLink("6");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        headphones: -1,
+      })
     );
   });
 });

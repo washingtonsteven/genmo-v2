@@ -1,7 +1,9 @@
+
+
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]",
+      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -42,7 +44,7 @@
       }
     },
     {
-      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]\n\n---\n\n{\n  \"s\":\"--2\",\n  \"d\":\"++5\",\n  \"c\":\"a string guvna\"\n}",
+      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]\n\n---\n\n{\n  \"s\":\"--2\",\n  \"d\":\"++5\",\n  \"c\":\"a string guvna\",\n  \"inventory_remove\":\"coin\"\n}",
       "links": [
         {
           "name": "Start",
@@ -63,7 +65,7 @@
       }
     },
     {
-      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is #{s}\nd is #{d}\nc is #{c}\n\n---\n\n[[Start]]\n[[Creme de la creme]] ",
+      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is #{s}\nd is #{d}\nc is #{c}\n\n---\n\n[[Start]]\n[[Creme de la creme]] \n\n---\n{\n\"inventory_add\":[\"book\",\"toothpaste\"]\n}",
       "links": [
         {
           "name": "Start",
@@ -126,7 +128,7 @@
       }
     },
     {
-      "text": "I swear, Alice, one of these days.\n\nBANG!\n\nZOOM!\n\nWe're going to Mars because I got a substantial raise at work.\n\nOh honey!\n\n---\n\n[[Start]] \n[[Staring at the truth til I'm blind]] ",
+      "text": "I swear, Alice, one of these days.\n\nBANG!\n\nZOOM!\n\nWe're going to Mars because I got a substantial raise at work.\n\nOh honey!\n\n---\n\n[[Start]] \n[[Staring at the truth til I'm blind]] \n\n---\n\n{\n\"inventory_remove\":\"headphones\"\n}",
       "links": [
         {
           "name": "Start",
@@ -147,7 +149,7 @@
       }
     },
     {
-      "text": "Today's the eclipse! Did you get your glasses?\n\nEclipse glasses are a scam from big glasses to sell more glasses.\n\nYour funeral.\n\n---\n\n[[Start]] ",
+      "text": "Today's the eclipse! Did you get your glasses?\n\nEclipse glasses are a scam from big glasses to sell more glasses.\n\nYour funeral.\n\n---\n\n[[Start]] \n\n---\n\n{\n\"inventory_remove\":[\"book\",\"toothpaste\"]\n}",
       "links": [
         {
           "name": "Start",
@@ -161,11 +163,21 @@
         "x": "787",
         "y": "350"
       }
+    },
+    {
+      "text": "Intro text for this passage.\n\n(link:\"==>\")[And this is some more text.\n\nIt can even have paragraphs. It's a little weird cause we want to text stuff.\n\n(link:\"==>\")[Yes stuff you fool. And I want to indent it really badly but I can't.\n]\n]",
+      "name": "Text reveals",
+      "pid": "8",
+      "position": {
+        "x": "913",
+        "y": "135"
+      }
     }
   ],
   "name": "GenmoTest",
   "startnode": "1",
   "creator": "Twine",
-  "creator-version": "2.2.1",
+  "creator-version": "2.3.8",
   "ifid": "2DEC574C-F71F-4A11-A57D-869A5C1C938F"
 }
+
