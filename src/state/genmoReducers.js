@@ -49,8 +49,10 @@ const updateInventory = (data, items = null, delta) => {
       }
 
       // apply given delta
-      data[SPECIAL_DATA_KEYS.INVENTORY][item] =
-        data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta;
+      data[SPECIAL_DATA_KEYS.INVENTORY][item] = Math.max(
+        0,
+        data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta
+      );
     });
   }
 };

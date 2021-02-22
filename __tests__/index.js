@@ -212,11 +212,11 @@ describe("inventory", () => {
     );
   });
 
-  test("Remove from inventory goes negative", () => {
+  test("Remove from inventory doesn't go  negative", () => {
     genmo.followLink("6");
     expect(genmo.getInventory()).toStrictEqual(
       expect.objectContaining({
-        headphones: -1,
+        headphones: 0,
       })
     );
   });
@@ -246,7 +246,6 @@ describe("inventory", () => {
   test("Update via function", () => {
     const inventory = {
       phone: 1,
-      money: -600,
       contract_pages: 46,
     };
     genmo.updateInventory(inventory);
