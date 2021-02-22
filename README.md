@@ -24,7 +24,7 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
     * [followLink(Object|String)](#followlinkobjectstring)
     * [respondToprompt(Object)](#respondtopromptobject)
     * [getInventory()](#getinventory)
-    * [updateInventory](#updateinventory)
+    * [updateInventory(Object)](#updateinventoryobject)
     * [state](#state)
 
 ---
