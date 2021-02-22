@@ -122,5 +122,11 @@ export class Genmo extends StatefulComponent {
   getInventory() {
     return this.state.data[SPECIAL_DATA_KEYS.INVENTORY];
   }
+  updateInventory(items) {
+    this.doAction({
+      ...actions.UPDATE_INVENTORY,
+      items,
+    });
+  }
   noop() {}
 }

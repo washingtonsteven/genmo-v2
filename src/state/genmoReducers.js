@@ -7,6 +7,10 @@ export const ACTIONS = {
     type: "PROMPT_ANSWER",
     data: {},
   },
+  UPDATE_INVENTORY: {
+    type: "UPDATE_INVENTORY",
+    items: {},
+  },
 };
 
 export const SPECIAL_DATA_KEYS = {
@@ -141,4 +145,25 @@ function promptAnswerReducer(state = {}, action) {
   };
 }
 
-export const reducers = [followLinkReducer, promptAnswerReducer];
+function updateInventoryReducer(state, action) {
+  if (action.type === ACTIONS.UPDATE_INVENTORY.type) {
+    const data = { ...state.data };
+    Object.entries(action.items).forEach(([key, value]) => {
+      updateInventory(data, key, value);
+    });
+    return {
+      ...state,
+      data,
+    };
+  }
+
+  return {
+    ...state,
+  };
+}
+
+export const reducers = [
+  followLinkReducer,
+  promptAnswerReducer,
+  updateInventoryReducer,
+];

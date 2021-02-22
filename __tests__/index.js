@@ -240,4 +240,16 @@ describe.only("inventory", () => {
       })
     );
   });
+
+  test("Update via function", () => {
+    const inventory = {
+      phone: 1,
+      money: -600,
+      contract_pages: 46,
+    };
+    genmo.updateInventory(inventory);
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining(inventory)
+    );
+  });
 });
