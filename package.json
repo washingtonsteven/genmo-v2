@@ -18,7 +18,6 @@
     "prebuild": "yarn run clean",
     "build": "babel src --out-dir lib",
     "clean": "del lib",
-    "pretest": "yarn run build",
     "test": "jest",
     "coverage": "jest --coverage",
     "prepublishOnly": "npm run build",
@@ -43,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/washingtonsteven/genmo-v2/issues"
   },
-  "homepage": "https://github.com/washingtonsteven/genmo-v2#readme"
+  "homepage": "https://github.com/washingtonsteven/genmo-v2#readme",
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
+  }
 }

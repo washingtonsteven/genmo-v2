@@ -1,4 +1,4 @@
-const { Genmo } = require("../lib");
+const { Genmo } = require("../src");
 const { ERRORS } = require("../src/utils");
 const { GenmoTest } = require("./stories");
 
@@ -62,11 +62,20 @@ describe("data update", () => {
 
   test("data properly set", () => {
     genmo.followLink(GenmoTest.passages[1].pid);
-    expect(genmo.state.data).toEqual({
-      s: -2,
-      d: 5,
-      c: "a string guvna",
-    });
+    expect(genmo.state.data).toStrictEqual(
+      expect.objectContaining({
+        s: -2,
+        d: 5,
+        c: "a string guvna",
+      })
+    );
+  });
+
+  test("protected key is ignored", () => {
+    genmo.followLink("8");
+    expect(genmo.getInventory()).not.toEqual(
+      expect.stringContaining("computer, keyboard, chair")
+    );
   });
 });
 
@@ -163,6 +172,85 @@ describe("prompt", () => {
     genmo.followLink("4");
     expect(genmo.outputCurrentPassage().filter((p) => !p.complete).length).toBe(
       1
+    );
+  });
+});
+
+describe("inventory", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: outputPid,
+      errorFunction: outputErrorType,
+    });
+  });
+
+  test("Add to inventory", () => {
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        coin: 1,
+      })
+    );
+  });
+
+  test("Add to inventory multiple times", () => {
+    genmo.followLink("5");
+    genmo.followLink("1");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        coin: 2,
+      })
+    );
+  });
+
+  test("Remove from inventory", () => {
+    genmo.followLink("2");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        coin: 0,
+      })
+    );
+  });
+
+  test("Remove from inventory doesn't go  negative", () => {
+    genmo.followLink("6");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        headphones: 0,
+      })
+    );
+  });
+
+  test("Add via array", () => {
+    genmo.followLink("3");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        book: 1,
+        toothpaste: 1,
+      })
+    );
+  });
+
+  test("Remove via array", () => {
+    genmo.followLink("3");
+    genmo.followLink("1");
+    genmo.followLink("7");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        book: 0,
+        toothpaste: 0,
+      })
+    );
+  });
+
+  test("Update via function", () => {
+    const inventory = {
+      phone: 1,
+      contract_pages: 46,
+    };
+    genmo.updateInventory(inventory);
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining(inventory)
     );
   });
 });

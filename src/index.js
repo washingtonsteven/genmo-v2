@@ -1,5 +1,10 @@
 import StatefulComponent from "./state/statefulComponent";
-import { ACTIONS as actions, reducers, DIVIDER } from "./state/genmoReducers";
+import {
+  ACTIONS as actions,
+  reducers,
+  DIVIDER,
+  SPECIAL_DATA_KEYS,
+} from "./state/genmoReducers";
 import { linkFilter, ERRORS, replaceVariables } from "./utils";
 
 export class Genmo extends StatefulComponent {
@@ -7,18 +12,13 @@ export class Genmo extends StatefulComponent {
     super(
       {
         storyData,
-        currentPassage: (() => {
-          if (!storyData || !storyData.passages || !storyData.passages.length)
-            return null;
-
-          return storyData.passages.find(p => p.pid === storyData.startnode);
-        })(),
-        data: {}
+        currentPassage: null,
+        data: {},
       },
       reducers
     );
 
-    if (!storyData || !storyData.passages || !this.state.currentPassage) {
+    if (!storyData || !storyData.passages || !storyData.startnode) {
       throw new Error(`storyData given to Genmo is invalid.`);
     }
 
@@ -26,20 +26,22 @@ export class Genmo extends StatefulComponent {
       opts.outputFunction || (console && console.log) || this.noop;
     this.errorFunction =
       opts.errorFunction || (console && console.warn) || this.noop;
+
+    this.followLink(storyData.startnode);
   }
   outputCurrentPassage() {
     return this.outputFunction(this.getCurrentPassage());
   }
   getCurrentPassage() {
     const passage = {
-      ...this.state.currentPassage
+      ...this.state.currentPassage,
     };
 
     passage.passageText = this.getPassageText(passage);
 
     passage.links = passage.links
-      .map(link => linkFilter(link, this.state.data))
-      .filter(l => l);
+      .map((link) => linkFilter(link, this.state.data))
+      .filter((l) => l);
 
     return passage;
   }
@@ -54,7 +56,7 @@ export class Genmo extends StatefulComponent {
     if (!link) {
       return this.errorFunction({
         ...ERRORS.InvalidLinkError,
-        message: `Link supplied to followLink was ${typeof link}, which is invalid`
+        message: `Link supplied to followLink was ${typeof link}, which is invalid`,
       });
     }
 
@@ -63,23 +65,28 @@ export class Genmo extends StatefulComponent {
       pid = link.pid;
     }
 
-    const activeLink = this.state.currentPassage.links.find(l => l.pid === pid);
+    const storyIsStarting =
+      pid === this.state.storyData.startnode &&
+      this.state.currentPassage === null;
+
+    const activeLink =
+      storyIsStarting ||
+      this.state.currentPassage.links.find((l) => l.pid === pid);
+
     if (!activeLink) {
       return this.errorFunction({
         ...ERRORS.LinkNotFoundError,
-        message: `Tried to activate a link to ${pid}, but that isn't a link on the current passage`
+        message: `Tried to activate a link to ${pid}, but that isn't a link on the current passage`,
       });
     }
 
     const nextPassage = this.state.storyData.passages.find(
-      p => p.pid === activeLink.pid
+      (p) => p.pid === pid
     );
     if (!nextPassage) {
       return this.errorFunction({
         ...ERRORS.PassageNotFoundError,
-        message: `Link said to go to passage with id:${
-          activeLink.pid
-        }, but that isn't a passage.`
+        message: `Link said to go to passage with id:${activeLink.pid}, but that isn't a passage.`,
       });
     }
 
@@ -87,7 +94,7 @@ export class Genmo extends StatefulComponent {
       {
         ...actions.FOLLOW_LINK,
         link: activeLink,
-        nextPassage
+        nextPassage,
       },
       callback,
       ...callbackArgs
@@ -106,11 +113,20 @@ export class Genmo extends StatefulComponent {
         ...actions.PROMPT_ANSWER,
         key,
         value,
-        pid: this.state.currentPassage.pid
+        pid: this.state.currentPassage.pid,
       },
       callback,
       ...callbackArgs
     );
+  }
+  getInventory() {
+    return this.state.data[SPECIAL_DATA_KEYS.INVENTORY];
+  }
+  updateInventory(items) {
+    this.doAction({
+      ...actions.UPDATE_INVENTORY,
+      items,
+    });
   }
   noop() {}
 }
