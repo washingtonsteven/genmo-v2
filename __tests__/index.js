@@ -70,6 +70,13 @@ describe("data update", () => {
       })
     );
   });
+
+  test("protected key is ignored", () => {
+    genmo.followLink("8");
+    expect(genmo.getInventory()).not.toEqual(
+      expect.stringContaining("computer, keyboard, chair")
+    );
+  });
 });
 
 describe("conditional links", () => {

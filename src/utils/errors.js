@@ -20,6 +20,11 @@ const ERRORS = {
     code: 4,
     message: "There is no attribute on your story JSON `startnode`",
   },
+  InvalidDataKeyError: {
+    type: "InvalidDataKeyError",
+    code: 5,
+    message: "Attempted access of a protected data key",
+  },
 };
 
 export default ERRORS;

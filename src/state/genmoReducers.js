@@ -19,6 +19,17 @@ export const SPECIAL_DATA_KEYS = {
   INVENTORY_REMOVE: "inventory_remove",
 };
 
+export const PROTECTED_DATA_KEYS = [SPECIAL_DATA_KEYS.INVENTORY];
+
+const invalidKey = (key) => {
+  let invalidKey = false;
+  PROTECTED_DATA_KEYS.forEach((protectedKey) => {
+    if (key === protectedKey) invalidKey = true;
+  });
+
+  return invalidKey;
+};
+
 // Modifies `data` in place to add an inventory key
 const updateInventory = (data, items = null, delta) => {
   if (!data[SPECIAL_DATA_KEYS.INVENTORY]) {
@@ -61,13 +72,19 @@ function followLinkReducer(state, action) {
     } catch (e) {
       if (action.nextPassage.text.split(DIVIDER).length >= 3) {
         console.warn(
-          `Couldn't properly parse data for ${currentPassage.name} (${currentPassage.pid})`
+          `Couldn't properly parse data for '${currentPassage.name}' (${currentPassage.pid})`
         );
       }
     }
 
     if (newData) {
       Object.entries(newData).forEach(([key, value]) => {
+        if (invalidKey(key)) {
+          console.warn(
+            `When parsing passage data for '${currentPassage.name}' (${currentPassage.pid}), we tried to access a protected key: ${key}`
+          );
+          return;
+        }
         const numericMatch =
           typeof value === "string" && value.match(/^(--|\+\+)(\d+)/);
         if (numericMatch) {

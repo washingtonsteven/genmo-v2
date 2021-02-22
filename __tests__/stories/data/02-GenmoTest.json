@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -34,6 +34,11 @@
           "name": "Staring at the truth til I'm blind||d gte 3",
           "link": "Staring at the truth til I'm blind",
           "pid": "7"
+        },
+        {
+          "name": "Invalid Data Key setting",
+          "link": "Invalid Data Key setting",
+          "pid": "8"
         }
       ],
       "name": "Start",
@@ -165,8 +170,15 @@
       }
     },
     {
-      "text": "Intro text for this passage.\n\n(link:\"==>\")[And this is some more text.\n\nIt can even have paragraphs. It's a little weird cause we want to text stuff.\n\n(link:\"==>\")[Yes stuff you fool. And I want to indent it really badly but I can't.\n]\n]",
-      "name": "Text reveals",
+      "text": "This passage has an invalid key.\n---\n[[Start]] \n---\n{\n\"inventory\":\"computer, keyboard, chair\"\n}",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Invalid Data Key setting",
       "pid": "8",
       "position": {
         "x": "913",
