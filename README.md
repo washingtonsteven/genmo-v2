@@ -13,6 +13,7 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
     * [Inserting data into text](#inserting-data-into-text)
     * [Prompting for data](#prompting-for-data)
     * [Conditional Links](#conditional-links)
+    * [Managing Player Inventory](#managing-player-inventory)
   * [Usage](#usage)
     * [Options](#options)
         * [outputFunction](#outputfunction)
@@ -161,6 +162,58 @@ The operators available are:
 
 The displayed name will also have anything after `||` removed before display/`outputFunction`
 
+#### Managing Player Inventory
+
+Genmo can keep track of a player's inventory as a set of key/value pairs where the key is the name of the item, and the value is how many they have. Currently, Genmo only supports adding one of an individual item at a time (i.e. per passage). For player resources like currencies, use [data](#story-data) instead.
+
+Inventory is indicated in the story text via the `inventory_add` and `inventory_remove` keys:
+
+```
+Normal passage text.
+
+---
+
+[[Page 2]]
+[[Page 3]]
+
+---
+{
+  "inventory_add": "wand_of_gamelon"
+}
+
+```
+
+This will add one (1) `wand_of_gamelon` to the player's inventory. Conversely:
+
+```
+Normal passage text.
+
+---
+
+[[Page 2]]
+[[Page 3]]
+
+---
+{
+  "inventory_remove": "broken_sword"
+}
+
+```
+
+Will remove one (1) `broken_sword` from the inventory. Note that inventory items cannot go negative.
+
+**Recommendation:** Genmo's inventory is a simple key/value pair, looking something like this:
+
+```js
+{
+  "bounce_bracelet": 1,
+  "magic_ring": 2,
+  "bread_loaves": 5
+}
+```
+
+Naturally, there isn't a lot of information in this about _what_ the inventory items actually are. The keys in this object can (should?) be used as keys in your application's item database so details about items (descriptions, images, flavor text) can be kept in application code.
+
 ### Usage
 
 ```js
@@ -282,6 +335,22 @@ Once you call `respondToPrompt` for a given `key`, it will still show up in the 
 
 Note this function will throw an error if you are attempting to respond to a prompt that does not exist on the current passage (`story.getCurrentPassage()`).
 
+#### `getInventory()`
+
+This simply returns the key/value pairs to indicate quantities in the player inventory. This is the same as `genmo.state.data.inventory`.
+#### `updateInventory(Object)`
+
+This will allow you to add items outside of specifying them in Twine. An object is provided which indicates which items are being updated, as well as a delta of their quantities:
+
+```js
+genmo.updateInventory({
+  "broom": 1,
+  "fishhook": -2,
+})
+```
+
+The above call will add one (1) broom to the inventory, and remove two (2) fishhooks.
+
 #### `state`
 
 ```
@@ -290,6 +359,8 @@ story.state
 story.state.storyData
 
 story.state.currentPassage
+
+story.state.data
 ```
 
 Genmo keeps track of its state in `state`, there are several properties:
@@ -302,5 +373,8 @@ Genmo keeps track of its state in `state`, there are several properties:
   - `creator-version`: Version of Twine when this story was made
   - `ifid`: String representing an ID to be used in the [Interactive Fiction Database](https://ifdb.tads.org/help-ifid)
 - `currentPassage`: The current passage set. Passage properties are detailed in the [`outputFunction` section](#outputFunction) above
+
+`story.state.data` is the list of custom data applied by inline JSON in Twine.
+
 
 **As a general rule:** `state` should only be read from, not written to. Writing to state outside of the provided functions (`followLink()`, etc) may cause inconsistent behavior. 
