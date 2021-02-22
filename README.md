@@ -339,9 +339,17 @@ Note this function will throw an error if you are attempting to respond to a pro
 
 #### `getInventory()`
 
+```
+story.getInventory();
+```
+
 This simply returns the key/value pairs to indicate quantities in the player inventory. This is the same as `genmo.state.data.inventory`.
 
 #### `updateInventory(Object)`
+
+```
+story.updateInventory(inventoryUpdateObject)
+```
 
 This will allow you to add items outside of specifying them in Twine. An object is provided which indicates which items are being updated, as well as a delta of their quantities:
 
