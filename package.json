@@ -23,8 +23,7 @@
     "prepublishOnly": "npm run build",
     "clean-bundle": "del bundle",
     "prebundle": "yarn run clean-bundle",
-    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting",
-    "preinstall": "npx npm-force-resolutions"
+    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting"
   },
   "jest": {
     "testPathIgnorePatterns": [
