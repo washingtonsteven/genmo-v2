@@ -62,11 +62,13 @@ describe("data update", () => {
 
   test("data properly set", () => {
     genmo.followLink(GenmoTest.passages[1].pid);
-    expect(genmo.state.data).toEqual({
-      s: -2,
-      d: 5,
-      c: "a string guvna",
-    });
+    expect(genmo.state.data).toStrictEqual(
+      expect.objectContaining({
+        s: -2,
+        d: 5,
+        c: "a string guvna",
+      })
+    );
   });
 });
 
@@ -167,7 +169,7 @@ describe("prompt", () => {
   });
 });
 
-describe.only("inventory", () => {
+describe("inventory", () => {
   let genmo;
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
@@ -176,13 +178,6 @@ describe.only("inventory", () => {
     });
   });
 
-  /*
-  Add inv single key, (passage 1, coin) -> Multiple times?
-  remove inv single key (passage 2, coin)
-  add inv array (passage 3, book/toothpaste)
-  remove inv array (passage 7, book/toothpaste)
-  remove nonexistent to negative (passage 6, headphones)
-  */
   test("Add to inventory", () => {
     expect(genmo.getInventory()).toStrictEqual(
       expect.objectContaining({
