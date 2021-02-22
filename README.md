@@ -23,6 +23,8 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
     * [outputCurrentPassage()](#outputcurrentpassage)
     * [followLink(Object|String)](#followlinkobjectstring)
     * [respondToprompt(Object)](#respondtopromptobject)
+    * [getInventory()](#getinventory)
+    * [updateInventory](#updateinventory)
     * [state](#state)
 
 ---
@@ -338,6 +340,7 @@ Note this function will throw an error if you are attempting to respond to a pro
 #### `getInventory()`
 
 This simply returns the key/value pairs to indicate quantities in the player inventory. This is the same as `genmo.state.data.inventory`.
+
 #### `updateInventory(Object)`
 
 This will allow you to add items outside of specifying them in Twine. An object is provided which indicates which items are being updated, as well as a delta of their quantities:
