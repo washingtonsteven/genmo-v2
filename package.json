@@ -23,7 +23,8 @@
     "prepublishOnly": "npm run build",
     "clean-bundle": "del bundle",
     "prebundle": "yarn run clean-bundle",
-    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting"
+    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting",
+    "preinstall": "npx npm-force-resolutions"
   },
   "jest": {
     "testPathIgnorePatterns": [
@@ -45,5 +46,8 @@
   "homepage": "https://github.com/washingtonsteven/genmo-v2#readme",
   "optionalDependencies": {
     "fsevents": "^2.3.2"
+  },
+  "resolutions": {
+    "node-forge": "0.10.0"
   }
 }
