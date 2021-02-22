@@ -16,20 +16,27 @@ export const SPECIAL_DATA_KEYS = {
 };
 
 // Modifies `data` in place to add an inventory key
-const updateInventory = (data, item = null, delta) => {
+const updateInventory = (data, items = null, delta) => {
   if (!data[SPECIAL_DATA_KEYS.INVENTORY]) {
     data[SPECIAL_DATA_KEYS.INVENTORY] = {};
   }
-  if (item) {
-    if (
-      !data[SPECIAL_DATA_KEYS.INVENTORY][item] &&
-      data[SPECIAL_DATA_KEYS.INVENTORY][item] !== 0
-    ) {
-      data[SPECIAL_DATA_KEYS.INVENTORY][item] = 0;
+  if (items) {
+    if (!Array.isArray(items)) {
+      items = [items];
     }
+    items.forEach((item) => {
+      // Initialize if it doesn't exist
+      if (
+        !data[SPECIAL_DATA_KEYS.INVENTORY][item] &&
+        data[SPECIAL_DATA_KEYS.INVENTORY][item] !== 0
+      ) {
+        data[SPECIAL_DATA_KEYS.INVENTORY][item] = 0;
+      }
 
-    data[SPECIAL_DATA_KEYS.INVENTORY][item] =
-      data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta;
+      // apply given delta
+      data[SPECIAL_DATA_KEYS.INVENTORY][item] =
+        data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta;
+    });
   }
 };
 
@@ -57,7 +64,8 @@ function followLinkReducer(state, action) {
 
     if (newData) {
       Object.entries(newData).forEach(([key, value]) => {
-        const numericMatch = value.match(/^(--|\+\+)(\d+)/);
+        const numericMatch =
+          typeof value === "string" && value.match(/^(--|\+\+)(\d+)/);
         if (numericMatch) {
           if (!data[key]) {
             data[key] = 0;

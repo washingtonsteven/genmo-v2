@@ -218,4 +218,26 @@ describe.only("inventory", () => {
       })
     );
   });
+
+  test("Add via array", () => {
+    genmo.followLink("3");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        book: 1,
+        toothpaste: 1,
+      })
+    );
+  });
+
+  test("Remove via array", () => {
+    genmo.followLink("3");
+    genmo.followLink("1");
+    genmo.followLink("7");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        book: 0,
+        toothpaste: 0,
+      })
+    );
+  });
 });
