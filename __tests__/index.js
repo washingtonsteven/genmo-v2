@@ -8,7 +8,10 @@ const { GenmoTest } = require("./stories");
 
 const outputPid = ({ pid }) => pid;
 
-const returnError = (err) => err;
+const returnError = (err) => {
+  console.error(err);
+  return err;
+};
 
 describe("basic setup", () => {
   test("start up without error", () => {
@@ -317,6 +320,35 @@ describe("inventory", () => {
     genmo.updateInventory(inventory);
     expect(genmo.getInventory()).toStrictEqual(
       expect.objectContaining(inventory)
+    );
+  });
+
+  test("Inventory conditionals", () => {
+    // Navigate to a passage with an inventory add conditional, but fail the condition (2)
+    // - item is not added
+    // Navigate to passage to fulfill the condition (3), navigate back (1, 2)
+    // - item is added
+
+    genmo.followLink("2");
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+      expect.objectContaining({
+        inventory_add: expect.objectContaining({
+          condition: expect.any(String),
+          name: "bookmark",
+        }),
+      })
+    );
+    expect(Object.keys(genmo.getInventory())).not.toStrictEqual(
+      expect.arrayContaining(["bookmark", "book"])
+    );
+    genmo.followLink("3");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["book"])
+    );
+    genmo.followLink("1");
+    genmo.followLink("2");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["bookmark"])
     );
   });
 });

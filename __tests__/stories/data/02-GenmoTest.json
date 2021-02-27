@@ -49,7 +49,7 @@
       }
     },
     {
-      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]\n\n---\n\n{\n  \"s\":\"--2\",\n  \"d\":\"++5\",\n  \"c\":\"a string guvna\",\n  \"inventory_remove\":\"coin\"\n}",
+      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]\n\n---\n\n{\n  \"s\":\"--2\",\n  \"d\":\"++5\",\n  \"c\":\"a string guvna\",\n  \"inventory_remove\":\"coin\",\n  \"inventory_add\": {\n    \"condition\": \"has book\",\n\t\"name\": \"bookmark\"\n  }\n}",
       "links": [
         {
           "name": "Start",
