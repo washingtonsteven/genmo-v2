@@ -25,6 +25,9 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
     * [respondToprompt(Object)](#respondtopromptobject)
     * [getInventory()](#getinventory)
     * [updateInventory(Object)](#updateinventoryobject)
+    * [setData(Object)](#setdataobject)
+    * [getData()](#getdata)
+    * [getPassageData(passage)](#getpassagedatapassage)
     * [state](#state)
 
 ---
@@ -296,7 +299,7 @@ Constructs a new Genmo Object. Options are detailed above.
 
 #### `outputCurrentPassage()`
 
-```
+```js
 story.outputCurrentPassage()
 ```
 
@@ -305,7 +308,7 @@ If your `outputFunction` returns a value, it will be returned here as well.
 
 #### `getCurrentPassage()`
 
-```
+```js
 story.getCurrentPassage()
 ```
 
@@ -313,7 +316,7 @@ Returns the raw passage object for the current passage. This is the same object 
 
 #### `followLink(Object|String)`
 
-```
+```js
 story.followLink(link)
 ```
 
@@ -323,7 +326,7 @@ Attempting to follow an invalid link (the link doesn't exist, is not a part of t
 
 #### `respondToPrompt(Object)`
 
-```
+```js
 story.respondToPrompt({variableName: "receivedValue"});
 ```
 
@@ -339,7 +342,7 @@ Note this function will throw an error if you are attempting to respond to a pro
 
 #### `getInventory()`
 
-```
+```js
 story.getInventory();
 ```
 
@@ -347,7 +350,7 @@ This simply returns the key/value pairs to indicate quantities in the player inv
 
 #### `updateInventory(Object)`
 
-```
+```js
 story.updateInventory(inventoryUpdateObject)
 ```
 
@@ -362,9 +365,33 @@ genmo.updateInventory({
 
 The above call will add one (1) broom to the inventory, and remove two (2) fishhooks.
 
+#### `setData(Object)`
+
+```js
+story.setData(myDataObject)
+```
+
+Allows you to set arbitrary data to the story's data. 
+
+#### `getData()`
+
+```js
+story.getData()
+```
+
+Returns the current data object for the story
+
+#### `getPassageData(passage)`
+
+```js
+story.getPassageData(story.getCurrentPassage()) // Or any other passage
+```
+
+Gets the parsed data for the current passage. Note that any deltas (i.e. `{ s: "--2"}`) will be returned unchanged, that is, as literal strings. Will return null if there is no data for the current passage.
+
 #### `state`
 
-```
+```js
 story.state
 
 story.state.storyData
