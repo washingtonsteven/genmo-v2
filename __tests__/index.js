@@ -69,6 +69,15 @@ describe("data update", () => {
         c: "a string guvna",
       })
     );
+    genmo.followLink(genmo.getCurrentPassage().links[1]);
+    // data should be unchanged
+    expect(genmo.state.data).toStrictEqual(
+      expect.objectContaining({
+        s: -2,
+        d: 5,
+        c: "a string guvna",
+      })
+    );
   });
 
   test("protected key is ignored", () => {
@@ -76,6 +85,26 @@ describe("data update", () => {
     expect(genmo.getInventory()).not.toEqual(
       expect.stringContaining("computer, keyboard, chair")
     );
+  });
+
+  test("able to fetch data for current passage, or null", () => {
+    genmo.followLink(GenmoTest.passages[1].pid);
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+      expect.objectContaining({
+        s: "--2",
+        d: "++5",
+        c: "a string guvna",
+      })
+    );
+    genmo.followLink(genmo.getCurrentPassage().links[1]);
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+      expect.objectContaining({
+        inventory_add: ["book", "toothpaste"],
+      })
+    );
+    genmo.followLink("1");
+    genmo.followLink("5");
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toBeNull();
   });
 });
 
@@ -212,7 +241,7 @@ describe("inventory", () => {
     );
   });
 
-  test("Remove from inventory doesn't go  negative", () => {
+  test("Remove from inventory doesn't go negative", () => {
     genmo.followLink("6");
     expect(genmo.getInventory()).toStrictEqual(
       expect.objectContaining({
