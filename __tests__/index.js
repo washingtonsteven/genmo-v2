@@ -1,5 +1,9 @@
 const { Genmo, ERRORS } = require("../src");
-const { InvalidLinkError, LinkNotFoundError } = require("../src/utils/errors");
+const {
+  InvalidLinkError,
+  LinkNotFoundError,
+  InvalidDataKeyError,
+} = require("../src/utils/errors");
 const { GenmoTest } = require("./stories");
 
 const outputPid = ({ pid }) => pid;
@@ -17,7 +21,7 @@ describe("basic setup", () => {
       new Genmo();
     }).toThrow();
   });
-  test.only("Error export working", () => {
+  test("Error export working", () => {
     expect(ERRORS).toStrictEqual(
       expect.objectContaining({
         GenmoError: expect.any(Function),
@@ -100,17 +104,14 @@ describe("data update", () => {
   });
 
   test("protected key is ignored", () => {
-    genmo.errorFunction = (err) => {
-      console.warn(JSON.stringify(err.toObject(), null, 1));
-    };
-    const warnSpy = jest
-      .spyOn(global.console, "warn")
-      .mockImplementation(() => {});
+    genmo.errorFunction = jest.fn();
     genmo.followLink("8");
     expect(genmo.getInventory()).not.toEqual(
       expect.stringContaining("computer, keyboard, chair")
     );
-    expect(warnSpy).toHaveBeenCalled();
+    expect(genmo.errorFunction).toHaveBeenCalledWith(
+      expect.any(InvalidDataKeyError)
+    );
   });
 
   test("able to fetch data for current passage, or null", () => {
