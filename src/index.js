@@ -45,12 +45,30 @@ export class Genmo extends StatefulComponent {
 
     return passage;
   }
-  getPassageText(passage) {
+  splitPassage(passage) {
     if (!passage || !passage.text) return null;
-    const parts = passage.text.split(DIVIDER);
-    const text = parts[0];
+    return passage.text.split(DIVIDER);
+  }
+  getPassageText(passage) {
+    const parts = this.splitPassage(passage);
+    if (!parts) return null;
 
+    const text = parts[0];
     return replaceVariables(text, this.state.data);
+  }
+  getPassageData(passage) {
+    const parts = this.splitPassage(passage);
+    if (!parts) return null;
+
+    const json = parts[parts.length - 1];
+    let parsed = null;
+    try {
+      parsed = JSON.parse(json);
+    } catch (e) {
+      // That wasn't JSON we just parsed, oh well.
+    }
+
+    return parsed;
   }
   followLink(link, callback, ...callbackArgs) {
     if (!link) {
