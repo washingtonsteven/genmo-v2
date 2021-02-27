@@ -25,9 +25,14 @@ class StatefulComponent {
   }
   doAction(action, callback, ...callbackArgs) {
     let updatedState = this.state;
-    this.reducers.forEach((r) => {
-      updatedState = r(updatedState, action) || updatedState; // protection against forgetting to return state
-    });
+    for (let i = 0; i < this.reducers.length; i++) {
+      try {
+        updatedState = this.reducers[i](updatedState, action) || updatedState;
+      } catch (err) {
+        this.onError(err);
+        break;
+      }
+    }
     this.setState(updatedState);
     this.actions.push(action);
 
@@ -35,6 +40,9 @@ class StatefulComponent {
   }
   doCallback(callback, ...args) {
     if (typeof callback === "function") callback(...args);
+  }
+  onError(err) {
+    throw err;
   }
 }
 

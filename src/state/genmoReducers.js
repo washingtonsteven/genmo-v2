@@ -1,3 +1,5 @@
+import { InvalidDataKeyError, InvalidPassageDataError } from "../utils/errors";
+
 export const ACTIONS = {
   FOLLOW_LINK: {
     type: "FOLLOW_LINK",
@@ -77,18 +79,19 @@ function followLinkReducer(state, action) {
       newData = JSON.parse(newDataJSON);
     } catch (e) {
       if (action.nextPassage.text.split(DIVIDER).length >= 3) {
-        console.warn(
-          `Couldn't properly parse data for '${currentPassage.name}' (${currentPassage.pid})`
-        );
+        throw new InvalidPassageDataError({
+          currentPassage,
+        });
       }
     }
 
     if (newData) {
       Object.entries(newData).forEach(([key, value]) => {
         if (invalidKey(key)) {
-          console.warn(
-            `When parsing passage data for '${currentPassage.name}' (${currentPassage.pid}), we tried to access a protected key: ${key}`
-          );
+          throw new InvalidDataKeyError({
+            currentPassage,
+            key,
+          });
           return;
         }
         const numericMatch =
