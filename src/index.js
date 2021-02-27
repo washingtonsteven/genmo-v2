@@ -70,6 +70,19 @@ export class Genmo extends StatefulComponent {
 
     return parsed;
   }
+  setData(data) {
+    if (!(typeof data === "object")) {
+      return false;
+    }
+
+    this.doAction({
+      ...actions.SET_DATA,
+      data,
+    });
+  }
+  getData() {
+    return { ...this.state.data };
+  }
   followLink(link, callback, ...callbackArgs) {
     if (!link) {
       return this.errorFunction({

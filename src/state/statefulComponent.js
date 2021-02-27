@@ -26,7 +26,7 @@ class StatefulComponent {
   doAction(action, callback, ...callbackArgs) {
     let updatedState = this.state;
     this.reducers.forEach((r) => {
-      updatedState = r(updatedState, action);
+      updatedState = r(updatedState, action) || updatedState; // protection against forgetting to return state
     });
     this.setState(updatedState);
     this.actions.push(action);

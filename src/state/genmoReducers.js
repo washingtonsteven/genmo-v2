@@ -11,6 +11,10 @@ export const ACTIONS = {
     type: "UPDATE_INVENTORY",
     items: {},
   },
+  SET_DATA: {
+    type: "SET_DATA",
+    data: {},
+  },
 };
 
 export const SPECIAL_DATA_KEYS = {
@@ -181,8 +185,26 @@ function updateInventoryReducer(state, action) {
   };
 }
 
+function setDataReducer(state, action) {
+  if (action.type === ACTIONS.SET_DATA.type) {
+    const data = { ...state.data } || {};
+    Object.entries(action.data).forEach(([key, value]) => {
+      data[key] = value;
+    });
+    return {
+      ...state,
+      data,
+    };
+  }
+
+  return {
+    ...state,
+  };
+}
+
 export const reducers = [
   followLinkReducer,
   promptAnswerReducer,
   updateInventoryReducer,
+  setDataReducer,
 ];
