@@ -81,10 +81,14 @@ describe("data update", () => {
   });
 
   test("protected key is ignored", () => {
+    const warnSpy = jest
+      .spyOn(global.console, "warn")
+      .mockImplementation(() => {});
     genmo.followLink("8");
     expect(genmo.getInventory()).not.toEqual(
       expect.stringContaining("computer, keyboard, chair")
     );
+    expect(warnSpy).toHaveBeenCalled();
   });
 
   test("able to fetch data for current passage, or null", () => {
@@ -105,6 +109,16 @@ describe("data update", () => {
     genmo.followLink("1");
     genmo.followLink("5");
     expect(genmo.getPassageData(genmo.getCurrentPassage())).toBeNull();
+  });
+
+  test("able to set data manually", () => {
+    const myData = {
+      horse: "of course",
+      meaning: 42,
+      donuts: true,
+    };
+    genmo.setData(myData);
+    expect(genmo.getData()).toStrictEqual(expect.objectContaining(myData));
   });
 });
 
