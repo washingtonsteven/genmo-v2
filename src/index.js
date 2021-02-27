@@ -5,7 +5,12 @@ import {
   DIVIDER,
   SPECIAL_DATA_KEYS,
 } from "./state/genmoReducers";
-import { linkFilter, ERRORS, replaceVariables } from "./utils";
+import { linkFilter, replaceVariables } from "./utils";
+import {
+  InvalidLinkError,
+  LinkNotFoundError,
+  PassageNotFoundError,
+} from "./utils/errors";
 
 export class Genmo extends StatefulComponent {
   constructor(storyData, opts = {}) {
@@ -85,10 +90,11 @@ export class Genmo extends StatefulComponent {
   }
   followLink(link, callback, ...callbackArgs) {
     if (!link) {
-      return this.errorFunction({
-        ...ERRORS.InvalidLinkError,
-        message: `Link supplied to followLink was ${typeof link}, which is invalid`,
-      });
+      return this.errorFunction(
+        new InvalidLinkError({
+          link,
+        })
+      );
     }
 
     let pid = link;
@@ -105,20 +111,22 @@ export class Genmo extends StatefulComponent {
       this.state.currentPassage.links.find((l) => l.pid === pid);
 
     if (!activeLink) {
-      return this.errorFunction({
-        ...ERRORS.LinkNotFoundError,
-        message: `Tried to activate a link to ${pid}, but that isn't a link on the current passage`,
-      });
+      return this.errorFunction(
+        new LinkNotFoundError({
+          link,
+        })
+      );
     }
 
     const nextPassage = this.state.storyData.passages.find(
       (p) => p.pid === pid
     );
     if (!nextPassage) {
-      return this.errorFunction({
-        ...ERRORS.PassageNotFoundError,
-        message: `Link said to go to passage with id:${activeLink.pid}, but that isn't a passage.`,
-      });
+      return this.errorFunction(
+        new PassageNotFoundError({
+          pid,
+        })
+      );
     }
 
     this.doAction(
@@ -159,5 +167,10 @@ export class Genmo extends StatefulComponent {
       items,
     });
   }
+  onError(err) {
+    this.errorFunction(err);
+  }
   noop() {}
 }
+
+export * as ERRORS from "./utils/errors";

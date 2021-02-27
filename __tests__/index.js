@@ -1,10 +1,10 @@
-const { Genmo } = require("../src");
-const { ERRORS } = require("../src/utils");
+const { Genmo, ERRORS } = require("../src");
+const { InvalidLinkError, LinkNotFoundError } = require("../src/utils/errors");
 const { GenmoTest } = require("./stories");
 
 const outputPid = ({ pid }) => pid;
 
-const outputErrorType = ({ type }) => type;
+const returnError = (err) => err;
 
 describe("basic setup", () => {
   test("start up without error", () => {
@@ -17,6 +17,19 @@ describe("basic setup", () => {
       new Genmo();
     }).toThrow();
   });
+  test.only("Error export working", () => {
+    expect(ERRORS).toStrictEqual(
+      expect.objectContaining({
+        GenmoError: expect.any(Function),
+        InvalidLinkError: expect.any(Function),
+        LinkNotFoundError: expect.any(Function),
+        PassageNotFoundError: expect.any(Function),
+        NoStartingNodeError: expect.any(Function),
+        InvalidDataKeyError: expect.any(Function),
+        InvalidPassageDataError: expect.any(Function),
+      })
+    );
+  });
 });
 
 describe("basic navigation", () => {
@@ -24,7 +37,7 @@ describe("basic navigation", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: outputPid,
-      errorFunction: outputErrorType,
+      errorFunction: returnError,
     });
   });
 
@@ -35,18 +48,24 @@ describe("basic navigation", () => {
   });
 
   test("follow a link", () => {
-    const link = genmo.state.currentPassage.links[0];
+    const link = genmo.getCurrentPassage().links[0];
     genmo.followLink(link);
     expect(genmo.outputCurrentPassage()).toBe(link.pid);
   });
 
   test("invalid link warning", () => {
-    expect(genmo.followLink()).toEqual(ERRORS.InvalidLinkError.type);
+    genmo.errorFunction = jest.fn();
+    genmo.followLink();
+    expect(genmo.errorFunction).toHaveBeenCalledWith(
+      expect.any(InvalidLinkError)
+    );
   });
 
   test("link not found warning", () => {
-    expect(genmo.followLink(Math.floor(Math.random() * 1000) + 5000)).toEqual(
-      ERRORS.LinkNotFoundError.type
+    genmo.errorFunction = jest.fn();
+    genmo.followLink(Math.floor(Math.random() * 1000) + 5000);
+    expect(genmo.errorFunction).toHaveBeenCalledWith(
+      expect.any(LinkNotFoundError)
     );
   });
 });
@@ -56,7 +75,7 @@ describe("data update", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: outputPid,
-      errorFunction: outputErrorType,
+      errorFunction: returnError,
     });
   });
 
@@ -81,6 +100,9 @@ describe("data update", () => {
   });
 
   test("protected key is ignored", () => {
+    genmo.errorFunction = (err) => {
+      console.warn(JSON.stringify(err.toObject(), null, 1));
+    };
     const warnSpy = jest
       .spyOn(global.console, "warn")
       .mockImplementation(() => {});
@@ -134,7 +156,7 @@ describe("conditional links", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: (passage) => passage.links,
-      errorFunction: outputErrorType,
+      errorFunction: returnError,
     });
   });
 
@@ -157,7 +179,7 @@ describe("variable interpolation", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: (passage) => passage.passageText,
-      errorFunction: outputErrorType,
+      errorFunction: returnError,
     });
   });
 
@@ -185,7 +207,7 @@ describe("prompt", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: (passage) => passage.needsPrompt,
-      errorFunction: outputErrorType,
+      errorFunction: returnError,
     });
   });
 
@@ -224,7 +246,7 @@ describe("inventory", () => {
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
       outputFunction: outputPid,
-      errorFunction: outputErrorType,
+      errorFunction: returnError,
     });
   });
 
