@@ -30,7 +30,7 @@ const excludedValues = [">>"];
 
 /**
  * @typedef {Function} Replacer
- * @param {module:utils/textReplacements~ShortcodeInfo} shortcodeInfo
+ * @param {ShortcodeInfo} shortcodeInfo
  */
 
 /**
@@ -38,7 +38,7 @@ const excludedValues = [">>"];
  *
  * @function
  * @param {String} content
- * @param {module:utils/textReplacements~Replacer[]} replacers
+ * @param {Replacer[]} replacers
  */
 export const replaceShortCodes = (content = "", replacers = []) => {
   let shortCodesReplaced = content;

@@ -32,7 +32,7 @@ class ShortcodeReplacers {
    * 2. `openTag` is "!inventory_has" AND `genmo` has none of the items listed in `tagArgs`
    * If these conditions aren't met, returns an empty string.
    *
-   * @param {module:utils/shortcodeReplacers~ReplacerParams} replacerParams
+   * @param {ReplacerParams} replacerParams
    * @return {String}
    */
   inventoryHas({ openTag, tagArgs, tagContent, closeTag }) {
