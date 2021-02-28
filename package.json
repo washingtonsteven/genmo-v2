@@ -11,9 +11,12 @@
     "babel-plugin-add-module-exports": "^1.0.0",
     "del-cli": "^1.1.0",
     "jest": "^26.6.3",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "rimraf": "^3.0.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "jsdoc": "^3.6.6"
+  },
   "scripts": {
     "prebuild": "yarn run clean",
     "build": "babel src --out-dir lib",
@@ -23,7 +26,10 @@
     "prepublishOnly": "npm run build",
     "clean-bundle": "del bundle",
     "prebundle": "yarn run clean-bundle",
-    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting"
+    "bundle": "parcel build src/bundleLoader.js --out-dir bundle --out-file genmo.js --experimental-scope-hoisting",
+    "docs:build": "jsdoc -c ./jsdoc.conf.json ./src/*",
+    "docs:serve": "npx serve ./docs",
+    "docs:clean": "rimraf ./docs"
   },
   "jest": {
     "testPathIgnorePatterns": [

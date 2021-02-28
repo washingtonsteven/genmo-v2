@@ -1,3 +1,4 @@
+/** @module */
 /**
  * @class
  * @property {Genmo} genmo
@@ -31,8 +32,8 @@ class ShortcodeReplacers {
    * 2. `openTag` is "!inventory_has" AND `genmo` has none of the items listed in `tagArgs`
    * If these conditions aren't met, returns an empty string.
    *
-   * @param {ReplacerParams} replacerParams
-   * @return {STring}
+   * @param {module:utils/shortcodeReplacers~ReplacerParams} replacerParams
+   * @return {String}
    */
   inventoryHas({ openTag, tagArgs, tagContent, closeTag }) {
     const items = tagArgs.split(/\s+/);
