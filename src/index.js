@@ -6,7 +6,7 @@ import {
   SPECIAL_DATA_KEYS,
 } from "./state/genmoReducers";
 import { linkFilter } from "./utils/conditionalFilters";
-import { replaceVariables } from "./utils/replaceVariables";
+import { replaceVariables, replaceShortCodes } from "./utils/replaceVariables";
 import {
   InvalidLinkError,
   LinkNotFoundError,
@@ -34,6 +34,8 @@ export class Genmo extends StatefulComponent {
       opts.errorFunction || (console && console.warn) || this.noop;
 
     this.followLink(storyData.startnode);
+
+    this.shortCodeReplacers = [this.shortcode_inventoryHas];
   }
   outputCurrentPassage() {
     return this.outputFunction(this.getCurrentPassage());
@@ -60,7 +62,13 @@ export class Genmo extends StatefulComponent {
     if (!parts) return null;
 
     const text = parts[0];
-    return replaceVariables(text, this.state.data);
+    const variablesReplaced = replaceVariables(text, this.state.data);
+    const shortCodesReplaced = replaceShortCodes(
+      variablesReplaced,
+      this.shortCodeReplacers
+    );
+
+    return shortCodesReplaced;
   }
   getPassageData(passage) {
     const parts = this.splitPassage(passage);
@@ -162,6 +170,7 @@ export class Genmo extends StatefulComponent {
   getInventory() {
     return this.state.data[SPECIAL_DATA_KEYS.INVENTORY];
   }
+  hasItem(item) {}
   updateInventory(items) {
     this.doAction({
       ...actions.UPDATE_INVENTORY,
@@ -170,6 +179,22 @@ export class Genmo extends StatefulComponent {
   }
   onError(err) {
     this.errorFunction(err);
+  }
+  // Separate shortcodes out into their own class?
+  shortcode_inventoryHas({ openTag, tagArgs, tagContent, closeTag }) {
+    if (openTag === "inventory_has" || openTag === "!inventory_has") {
+      const items = tagArgs.split(/\s+/);
+      let hasAnyItemInList = false;
+      items.forEach((item) => {
+        if (this.hasItem(item)) {
+          hasAnyItemInList = true;
+        }
+      });
+      if (hasAnyItemInList && openTag === "inventory_has") return tagContent;
+      else if (!hasAnyItemInList && openTag === "!inventory_has")
+        return tagContent;
+      else return "";
+    }
   }
   noop() {}
 }
