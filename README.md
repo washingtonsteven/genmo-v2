@@ -1,34 +1,35 @@
-# 📕 Genmo v2 📗
+# 📕 Genmo v2 📗 <!-- omit in toc -->
 
-## New, updated, sleeker, sexier, adjectivier, and cheesier than ever! 🧀
+## New, updated, sleeker, sexier, adjectivier, and cheesier than ever! 🧀 <!-- omit in toc -->
 
 Genmo is a text narrative engine that is meant to be pluggable into any sort of frontend. 
 
 ---
-
-## Table of Contents
-
-  * [Generating Stories](#generating-stories)
-    * [Story Data](#story-data)
-    * [Inserting data into text](#inserting-data-into-text)
-    * [Prompting for data](#prompting-for-data)
-    * [Conditional Links](#conditional-links)
-    * [Managing Player Inventory](#managing-player-inventory)
-  * [Usage](#usage)
-    * [Options](#options)
-        * [outputFunction](#outputfunction)
-        * [errorFunction](#errorfunction)
-  * [API](#api)
-    * [new Genmo(storyData, options = {})](#new-genmostorydata-options--)
-    * [outputCurrentPassage()](#outputcurrentpassage)
-    * [followLink(Object|String)](#followlinkobjectstring)
-    * [respondToprompt(Object)](#respondtopromptobject)
-    * [getInventory()](#getinventory)
-    * [updateInventory(Object)](#updateinventoryobject)
-    * [setData(Object)](#setdataobject)
-    * [getData()](#getdata)
-    * [getPassageData(passage)](#getpassagedatapassage)
-    * [state](#state)
+## Table of Contents <!-- omit in toc -->
+- [Generating Stories](#generating-stories)
+  - [Story Data](#story-data)
+  - [Inserting data into text](#inserting-data-into-text)
+  - [Prompting for data](#prompting-for-data)
+  - [Conditional Links](#conditional-links)
+  - [Managing Player Inventory](#managing-player-inventory)
+  - [Shortcodes](#shortcodes)
+    - [`has_inventory` and `!has_inventory`](#has_inventory-and-has_inventory)
+- [Usage](#usage)
+  - [Options](#options)
+    - [`outputFunction`](#outputfunction)
+    - [`errorFunction`](#errorfunction)
+- [API](#api)
+  - [`new Genmo(storyData, options = {})`](#new-genmostorydata-options--)
+  - [`outputCurrentPassage()`](#outputcurrentpassage)
+  - [`getCurrentPassage()`](#getcurrentpassage)
+  - [`followLink(Object|String)`](#followlinkobjectstring)
+  - [`respondToPrompt(Object)`](#respondtopromptobject)
+  - [`getInventory()`](#getinventory)
+  - [`updateInventory(Object)`](#updateinventoryobject)
+  - [`setData(Object)`](#setdataobject)
+  - [`getData()`](#getdata)
+  - [`getPassageData(passage)`](#getpassagedatapassage)
+  - [`state`](#state)
 
 ---
 
@@ -218,6 +219,42 @@ Will remove one (1) `broken_sword` from the inventory. Note that inventory items
 ```
 
 Naturally, there isn't a lot of information in this about _what_ the inventory items actually are. The keys in this object can (should?) be used as keys in your application's item database so details about items (descriptions, images, flavor text) can be kept in application code.
+
+#### Shortcodes
+
+Some shortcodes are available to modify your text on the fly. Shortcodes are typically follow the following format:
+
+```
+#{shortcodeName argument1 argument2}Text content here to be modified by the shortcode#{/shortcodeName}
+```
+
+This format is fairly strict; any unexpected output around shortcodes should be inspected for proper format (I personally have forgotten the ending `/` in the closing shortcode tag a bunch).
+
+Shortcodes cannot be nested, any shortcodes within a shortcode text content will not be processed. Data within a shortcode will be replaced, however.
+
+Also, line breaks around the shortcodes are not cleaned up, so excessive shortcode use, or using line breaks around the codes may result in a lot of new lines. This can be mitigated by collapsing line breaks with `trim()` or something like `replace(/[\r\n]+/, "\n")`, to limit line breaks to one.
+
+##### `has_inventory` and `!has_inventory`
+
+These shortcodes will show/hide the text content based on whether the player has (or doesn't have) a set of specified items in their inventory.
+
+```
+#{inventory_has coin}You have a coin!#{/inventory_has}
+```
+
+In the opening tag, you can supply a space-separate list of items that the player must have ALL of in order for the text to show:
+
+```
+#{inventory_has coin book}You have a coin and a book#{/inventory_has}
+```
+
+`!has_inventory works the same, but asserts that a player doesn't have an item. If multiple items are specified, the player must not have any of the items in the list:
+
+```
+#{!inventory_has tea coffee}You don't have tea OR coffee#{/!inventory_has}
+```
+
+(Note that the closing tag has both the `/` for closing the tag, and `!` from the shortcodeName)
 
 ### Usage
 
