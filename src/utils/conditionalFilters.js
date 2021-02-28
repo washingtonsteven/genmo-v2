@@ -1,6 +1,6 @@
 import { SPECIAL_DATA_KEYS } from "../state/genmoReducers";
 
-const CONDITION_REGEX = /(\w+|\d+)\s+(\w+|\d+)\s*(\w+|\d+)*/;
+const CONDITION_REGEX = /(!?\w+|\d+)\s+(\w+|\d+)\s*(\w+|\d+)*/;
 
 const numberOperators = ["lt", "gt", "lte", "gte"];
 
@@ -11,49 +11,55 @@ export const checkCondition = ({ data, variable, operator, ref }) => {
   }
 
   switch (operator) {
-    case "gte": {
+    case "gte":
       if (Number(data[variable]) >= Number(ref)) {
         return true;
       }
-    }
-    case "lte": {
+      break;
+    case "lte":
       if (Number(data[variable]) <= Number(ref)) {
         return true;
       }
-    }
-    case "lt": {
+      break;
+    case "lt":
       if (Number(data[variable]) < Number(ref)) {
         return true;
       }
-    }
-    case "gt": {
+      break;
+    case "gt":
       if (Number(data[variable]) < Number(ref)) {
         return true;
       }
-    }
-    case "eq": {
+      break;
+    case "eq":
       if (data[variable] == ref) {
         return true;
       }
-    }
-    case "seq": {
+      break;
+    case "seq":
       // strict equals
       if (data[variable] === ref) {
         return true;
       }
-    }
-    case "has": {
+      break;
+    case "has":
       if (
         data[SPECIAL_DATA_KEYS.INVENTORY] &&
-        data[SPECIAL_DATA_KEYS.INVENTORY][variable]
+        Number(data[SPECIAL_DATA_KEYS.INVENTORY][variable]) > 0
       ) {
         return true;
       }
-    }
-    default: {
+      break;
+    case "!has":
+      if (!data[SPECIAL_DATA_KEYS.INVENTORY]) return true;
+      if (!data[SPECIAL_DATA_KEYS.INVENTORY][variable]) return true;
       return false;
-    }
+      break;
+    default:
+      return false;
   }
+
+  return false;
 };
 
 const checkConditionString = (conditionStr, data) => {
@@ -62,9 +68,9 @@ const checkConditionString = (conditionStr, data) => {
   );
 
   // Inventory check doesn't follow the `var operator y` syntax
-  // Instead it is `has item`
+  // Instead it is `has item` (or `!has`)
   // So we can just swap vars around and be okay
-  if (variable === "has") {
+  if (variable.indexOf("has") >= 0) {
     let realOperator = variable;
     variable = operator;
     operator = realOperator;

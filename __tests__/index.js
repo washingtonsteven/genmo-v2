@@ -323,24 +323,20 @@ describe("inventory", () => {
     );
   });
 
-  test("Inventory conditionals", () => {
-    // Navigate to a passage with an inventory add conditional, but fail the condition (2)
-    // - item is not added
-    // Navigate to passage to fulfill the condition (3), navigate back (1, 2)
-    // - item is added
-
+  test("Inventory positive conditionals", () => {
     genmo.followLink("2");
     expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
       expect.objectContaining({
         inventory_add: expect.objectContaining({
-          condition: expect.any(String),
+          condition: expect.stringMatching(/^has/),
           name: "bookmark",
         }),
       })
     );
-    expect(Object.keys(genmo.getInventory())).not.toStrictEqual(
-      expect.arrayContaining(["bookmark", "book"])
-    );
+
+    expect(Object.keys(genmo.getInventory())).not.toContain("bookmark");
+    expect(Object.keys(genmo.getInventory())).not.toContain("book");
+
     genmo.followLink("3");
     expect(Object.keys(genmo.getInventory())).toStrictEqual(
       expect.arrayContaining(["book"])
@@ -349,6 +345,28 @@ describe("inventory", () => {
     genmo.followLink("2");
     expect(Object.keys(genmo.getInventory())).toStrictEqual(
       expect.arrayContaining(["bookmark"])
+    );
+  });
+
+  test("Inventory negative conditionals", () => {
+    genmo.followLink("9");
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+      expect.objectContaining({
+        inventory_add: expect.objectContaining({
+          condition: expect.stringMatching(/^!has/),
+          name: "membership_card",
+        }),
+      })
+    );
+    expect(Object.keys(genmo.getInventory())).not.toContain("membership_card");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["coin"])
+    );
+    genmo.followLink("2");
+    expect(genmo.getInventory()["coin"]).toBeFalsy();
+    genmo.followLink("9");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["membership_card"])
     );
   });
 });
