@@ -8,7 +8,10 @@ const { GenmoTest } = require("./stories");
 
 const outputPid = ({ pid }) => pid;
 
-const returnError = (err) => err;
+const returnError = (err) => {
+  console.error(err);
+  return err;
+};
 
 describe("basic setup", () => {
   test("start up without error", () => {
@@ -317,6 +320,53 @@ describe("inventory", () => {
     genmo.updateInventory(inventory);
     expect(genmo.getInventory()).toStrictEqual(
       expect.objectContaining(inventory)
+    );
+  });
+
+  test("Inventory positive conditionals", () => {
+    genmo.followLink("2");
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+      expect.objectContaining({
+        inventory_add: expect.objectContaining({
+          condition: expect.stringMatching(/^has/),
+          name: "bookmark",
+        }),
+      })
+    );
+
+    expect(Object.keys(genmo.getInventory())).not.toContain("bookmark");
+    expect(Object.keys(genmo.getInventory())).not.toContain("book");
+
+    genmo.followLink("3");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["book"])
+    );
+    genmo.followLink("1");
+    genmo.followLink("2");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["bookmark"])
+    );
+  });
+
+  test("Inventory negative conditionals", () => {
+    genmo.followLink("9");
+    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+      expect.objectContaining({
+        inventory_add: expect.objectContaining({
+          condition: expect.stringMatching(/^!has/),
+          name: "membership_card",
+        }),
+      })
+    );
+    expect(Object.keys(genmo.getInventory())).not.toContain("membership_card");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["coin"])
+    );
+    genmo.followLink("2");
+    expect(genmo.getInventory()["coin"]).toBeFalsy();
+    genmo.followLink("9");
+    expect(Object.keys(genmo.getInventory())).toStrictEqual(
+      expect.arrayContaining(["membership_card"])
     );
   });
 });

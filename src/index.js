@@ -5,7 +5,8 @@ import {
   DIVIDER,
   SPECIAL_DATA_KEYS,
 } from "./state/genmoReducers";
-import { linkFilter, replaceVariables } from "./utils";
+import { linkFilter } from "./utils/conditionalFilters";
+import { replaceVariables } from "./utils/replaceVariables";
 import {
   InvalidLinkError,
   LinkNotFoundError,

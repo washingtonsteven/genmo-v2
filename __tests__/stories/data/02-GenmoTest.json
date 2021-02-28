@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -39,6 +39,11 @@
           "name": "Invalid Data Key setting",
           "link": "Invalid Data Key setting",
           "pid": "8"
+        },
+        {
+          "name": "Conditional !has coin",
+          "link": "Conditional !has coin",
+          "pid": "9"
         }
       ],
       "name": "Start",
@@ -49,7 +54,7 @@
       }
     },
     {
-      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]\n\n---\n\n{\n  \"s\":\"--2\",\n  \"d\":\"++5\",\n  \"c\":\"a string guvna\",\n  \"inventory_remove\":\"coin\"\n}",
+      "text": "The voices are going oooo\n\n---\n\n[[Start]]\n[[Animal noises]]\n[[Conditional !has coin]] \n\n---\n\n{\n  \"s\":\"--2\",\n  \"d\":\"++5\",\n  \"c\":\"a string guvna\",\n  \"inventory_remove\":\"coin\",\n  \"inventory_add\": {\n    \"condition\": \"has book\",\n\t\"name\": \"bookmark\"\n  }\n}",
       "links": [
         {
           "name": "Start",
@@ -60,6 +65,11 @@
           "name": "Animal noises",
           "link": "Animal noises",
           "pid": "3"
+        },
+        {
+          "name": "Conditional !has coin",
+          "link": "Conditional !has coin",
+          "pid": "9"
         }
       ],
       "name": "I'm hearing voices",
@@ -183,6 +193,27 @@
       "position": {
         "x": "913",
         "y": "135"
+      }
+    },
+    {
+      "text": "If you don't have a coin you get a membership card\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        },
+        {
+          "name": "I'm hearing voices",
+          "link": "I'm hearing voices",
+          "pid": "2"
+        }
+      ],
+      "name": "Conditional !has coin",
+      "pid": "9",
+      "position": {
+        "x": "108.66666666666663",
+        "y": "101.66666666666663"
       }
     }
   ],

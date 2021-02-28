@@ -1,4 +1,9 @@
-import { InvalidDataKeyError, InvalidPassageDataError } from "../utils/errors";
+import { inventoryFilter } from "../utils/conditionalFilters";
+import {
+  InvalidDataKeyError,
+  InvalidPassageDataError,
+  LinkNotFoundError,
+} from "../utils/errors";
 
 export const ACTIONS = {
   FOLLOW_LINK: {
@@ -46,19 +51,22 @@ const updateInventory = (data, items = null, delta) => {
       items = [items];
     }
     items.forEach((item) => {
-      // Initialize if it doesn't exist
-      if (
-        !data[SPECIAL_DATA_KEYS.INVENTORY][item] &&
-        data[SPECIAL_DATA_KEYS.INVENTORY][item] !== 0
-      ) {
-        data[SPECIAL_DATA_KEYS.INVENTORY][item] = 0;
+      if (typeof item === "object" && item.condition) {
+        const f = inventoryFilter;
+        if (inventoryFilter(item, data)) {
+          data[SPECIAL_DATA_KEYS.INVENTORY][item.name] = Math.max(
+            0,
+            data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta
+          );
+        }
+      } else if (typeof item === "string") {
+        // Initialize if it doesn't exist
+        // apply given delta
+        data[SPECIAL_DATA_KEYS.INVENTORY][item] = Math.max(
+          0,
+          (data[SPECIAL_DATA_KEYS.INVENTORY][item] || 0) + delta
+        );
       }
-
-      // apply given delta
-      data[SPECIAL_DATA_KEYS.INVENTORY][item] = Math.max(
-        0,
-        data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta
-      );
     });
   }
 };
