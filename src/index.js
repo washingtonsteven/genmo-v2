@@ -6,12 +6,13 @@ import {
   SPECIAL_DATA_KEYS,
 } from "./state/genmoReducers";
 import { linkFilter } from "./utils/conditionalFilters";
-import { replaceVariables } from "./utils/replaceVariables";
+import { replaceVariables, replaceShortCodes } from "./utils/textReplacements";
 import {
   InvalidLinkError,
   LinkNotFoundError,
   PassageNotFoundError,
 } from "./utils/errors";
+import { ShortcodeReplacers } from "./utils/shortcodeReplacers";
 
 export class Genmo extends StatefulComponent {
   constructor(storyData, opts = {}) {
@@ -34,6 +35,8 @@ export class Genmo extends StatefulComponent {
       opts.errorFunction || (console && console.warn) || this.noop;
 
     this.followLink(storyData.startnode);
+
+    this.shortCodeReplacers = new ShortcodeReplacers(this);
   }
   outputCurrentPassage() {
     return this.outputFunction(this.getCurrentPassage());
@@ -60,7 +63,13 @@ export class Genmo extends StatefulComponent {
     if (!parts) return null;
 
     const text = parts[0];
-    return replaceVariables(text, this.state.data);
+    const variablesReplaced = replaceVariables(text, this.state.data);
+    const shortCodesReplaced = replaceShortCodes(
+      variablesReplaced,
+      this.shortCodeReplacers.getReplacers()
+    );
+
+    return shortCodesReplaced;
   }
   getPassageData(passage) {
     const parts = this.splitPassage(passage);
@@ -161,6 +170,12 @@ export class Genmo extends StatefulComponent {
   }
   getInventory() {
     return this.state.data[SPECIAL_DATA_KEYS.INVENTORY];
+  }
+  getItem(item) {
+    return (this.getInventory() || {})[item];
+  }
+  hasItem(item) {
+    return Boolean(this.getItem(item));
   }
   updateInventory(items) {
     this.doAction({

@@ -101,7 +101,7 @@
       }
     },
     {
-      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
+      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n#{inventory_has coin}\nYou have a coin\n#{/inventory_has}\n#{!inventory_has toothpaste}\nYou don't have toothpaste\n#{/!inventory_has}\n#{inventory_has coin book}\nYou have a coin and a book\n#{/inventory_has}\n   \n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
       "links": [
         {
           "name": "Start",
@@ -196,7 +196,7 @@
       }
     },
     {
-      "text": "If you don't have a coin you get a membership card\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
+      "text": "If you don't have a coin you get a membership card #{inventory_has coin}You have a coin, too bad#{/inventory_has}\n\nSome other text here.\n\n#{!inventory_has coin}You don't have a coin! Congrats, friend#{/inventory_has}\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
       "links": [
         {
           "name": "Start",
