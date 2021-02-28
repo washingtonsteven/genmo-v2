@@ -370,3 +370,38 @@ describe("inventory", () => {
     );
   });
 });
+
+describe("shortcodes", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: (passage) => passage.passageText,
+      errorFunction: returnError,
+    });
+  });
+
+  test("inventory_has", () => {
+    const coinOnly = "You have a coin";
+    const noToothpaste = "You don't have toothpaste";
+    const coinAndBook = "You have a coin and a book";
+    genmo.followLink("4");
+    expect(genmo.outputCurrentPassage()).toEqual(
+      expect.stringContaining(coinOnly)
+    );
+    expect(genmo.outputCurrentPassage()).not.toEqual(
+      expect.stringContaining(coinAndBook)
+    );
+    expect(genmo.outputCurrentPassage()).toEqual(
+      expect.stringContaining(noToothpaste)
+    );
+    genmo.followLink("1");
+    genmo.followLink("3"); // get book/toothpaste
+    genmo.followLink("4");
+    expect(genmo.outputCurrentPassage()).toEqual(
+      expect.stringContaining(coinAndBook)
+    );
+    expect(genmo.outputCurrentPassage()).not.toEqual(
+      expect.stringContaining(noToothpaste)
+    );
+  });
+});

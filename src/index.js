@@ -6,12 +6,13 @@ import {
   SPECIAL_DATA_KEYS,
 } from "./state/genmoReducers";
 import { linkFilter } from "./utils/conditionalFilters";
-import { replaceVariables, replaceShortCodes } from "./utils/replaceVariables";
+import { replaceVariables, replaceShortCodes } from "./utils/textReplacements";
 import {
   InvalidLinkError,
   LinkNotFoundError,
   PassageNotFoundError,
 } from "./utils/errors";
+import { ShortcodeReplacers } from "./utils/shortcodeReplacers";
 
 export class Genmo extends StatefulComponent {
   constructor(storyData, opts = {}) {
@@ -35,7 +36,7 @@ export class Genmo extends StatefulComponent {
 
     this.followLink(storyData.startnode);
 
-    this.shortCodeReplacers = [this.shortcode_inventoryHas];
+    this.shortCodeReplacers = new ShortcodeReplacers(this);
   }
   outputCurrentPassage() {
     return this.outputFunction(this.getCurrentPassage());
@@ -65,7 +66,7 @@ export class Genmo extends StatefulComponent {
     const variablesReplaced = replaceVariables(text, this.state.data);
     const shortCodesReplaced = replaceShortCodes(
       variablesReplaced,
-      this.shortCodeReplacers
+      this.shortCodeReplacers.getReplacers()
     );
 
     return shortCodesReplaced;
@@ -170,7 +171,12 @@ export class Genmo extends StatefulComponent {
   getInventory() {
     return this.state.data[SPECIAL_DATA_KEYS.INVENTORY];
   }
-  hasItem(item) {}
+  getItem(item) {
+    return (this.getInventory() || {})[item];
+  }
+  hasItem(item) {
+    return Boolean(this.getItem(item));
+  }
   updateInventory(items) {
     this.doAction({
       ...actions.UPDATE_INVENTORY,
@@ -179,22 +185,6 @@ export class Genmo extends StatefulComponent {
   }
   onError(err) {
     this.errorFunction(err);
-  }
-  // Separate shortcodes out into their own class?
-  shortcode_inventoryHas({ openTag, tagArgs, tagContent, closeTag }) {
-    if (openTag === "inventory_has" || openTag === "!inventory_has") {
-      const items = tagArgs.split(/\s+/);
-      let hasAnyItemInList = false;
-      items.forEach((item) => {
-        if (this.hasItem(item)) {
-          hasAnyItemInList = true;
-        }
-      });
-      if (hasAnyItemInList && openTag === "inventory_has") return tagContent;
-      else if (!hasAnyItemInList && openTag === "!inventory_has")
-        return tagContent;
-      else return "";
-    }
   }
   noop() {}
 }
