@@ -1,9 +1,20 @@
+/**
+ * @class
+ * Generic Genmo Error
+ * @property {String} message
+ * @property {Object} errorInfo
+ * @property {Number} code
+ */
 export class GenmoError extends Error {
   constructor(message, errorInfo, code = -1) {
     super(message);
     this.errorInfo = errorInfo;
     this.code = code;
   }
+  /**
+   * Converts this error into a plan Object, with all its fields intact.
+   * @return {Object}
+   */
   toObject() {
     return Object.getOwnPropertyNames(this).reduce((obj, key) => {
       obj[key] = this[key];

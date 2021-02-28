@@ -184,8 +184,8 @@ export class Genmo extends StatefulComponent {
    * An error will also be thrown in the linked to passage doesn't exist.
    *
    * @param {Passage|Pid} link
-   * @param {Function} callback
-   * @param  {...any} callbackArgs
+   * @param {Function} [callback]
+   * @param  {...any} [callbackArgs]
    * @throws {InvalidLinkError}
    * @throws {LinkNotFoundError}
    * @throws {PassageNotFoundError}
@@ -245,8 +245,8 @@ export class Genmo extends StatefulComponent {
    * When a passage requires a prompt, this function will add the response to the story's `state.data`
    *
    * @param {String} response
-   * @param {Function} callback
-   * @param  {...any} callbackArgs
+   * @param {Function} [callback]
+   * @param  {...any} [callbackArgs]
    */
   respondToPrompt(response, callback, ...callbackArgs) {
     const responseEntries = Object.entries(response);

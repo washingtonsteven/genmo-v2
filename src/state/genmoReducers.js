@@ -5,33 +5,74 @@ import {
   LinkNotFoundError,
 } from "../utils/errors";
 
+/**
+ * @type {Object} A list of basic actions, which can be merged with data to create a full action
+ *
+ * e.g const MY_FOLLOW_ACTION = { ...ACTIONS.FOLLOW_LINK, link:"1" }
+ */
 export const ACTIONS = {
+  /**
+   * @type {Object}
+   * @property {String} type
+   * @property {Link} link
+   */
   FOLLOW_LINK: {
     type: "FOLLOW_LINK",
     link: null,
   },
+  /**
+   * @type {Object}
+   * @property {String} type
+   * @property {String} key
+   * @property {String} value
+   * @property {Pid} pid
+   */
   PROMPT_ANSWER: {
     type: "PROMPT_ANSWER",
-    data: {},
+    key: "",
+    value: "",
+    pid: "",
   },
+  /**
+   * @type {Object}
+   * @property {String} type
+   * @property {Object} items
+   */
   UPDATE_INVENTORY: {
     type: "UPDATE_INVENTORY",
     items: {},
   },
+  /**
+   * @type {Object}
+   * @property {String} type
+   * @property {Object} data
+   */
   SET_DATA: {
     type: "SET_DATA",
     data: {},
   },
 };
 
+/**
+ * @type {Object}
+ * A list of special keys that could exist in Genmo's custom data. Kept here to lower the # of "magic strings" in the code
+ */
 export const SPECIAL_DATA_KEYS = {
   INVENTORY: "inventory",
   INVENTORY_ADD: "inventory_add",
   INVENTORY_REMOVE: "inventory_remove",
 };
 
+/**
+ * @type {String[]}
+ * A list of keys that should not be overwritten by in-passage data.
+ */
 export const PROTECTED_DATA_KEYS = [SPECIAL_DATA_KEYS.INVENTORY];
 
+/**
+ * Returns whether the key is okay to use (based on PROTECTED_DATA_KEYS)
+ * @param {String} key
+ */
 const invalidKey = (key) => {
   let invalidKey = false;
   PROTECTED_DATA_KEYS.forEach((protectedKey) => {
@@ -41,7 +82,24 @@ const invalidKey = (key) => {
   return invalidKey;
 };
 
-// Modifies `data` in place to add an inventory key
+/**
+ *
+ * @typedef {Object} ConditionalInventoryItem
+ * @property {String} condition
+ * @property {String} name
+ */
+
+/**
+ * Updates `data` in place to add/remove `items` based on the given `delta`.
+ * This will create the inventory on the data object if it does not already exist.
+ * This will also prevent any item's quantity from going below zero.
+ *
+ * If there is an object within `items` with a key `condition`, it will be considered before adding/removing the item.
+ *
+ * @param {Object} data
+ * @param {(String|ConditionalInventoryItem)[]} items
+ * @param {Number} delta
+ */
 const updateInventory = (data, items = null, delta) => {
   if (!data[SPECIAL_DATA_KEYS.INVENTORY]) {
     data[SPECIAL_DATA_KEYS.INVENTORY] = {};
@@ -71,8 +129,19 @@ const updateInventory = (data, items = null, delta) => {
   }
 };
 
+/** @type {String} The string used to divide up sections of a passage */
 export const DIVIDER = "\n---\n";
 
+/**
+ * Updates the state to point currentPassage to action.link (if action.type === ACTIONS.FOLLOW_LINK.type)
+ * This will also check if the link is valid, apply any data to the state from the new passage, and request prompts for the passage as indicated.
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @return {Object} The new state
+ * @throws {InvalidPassageDataError}
+ * @throws {InvalidDataKeyError}
+ */
 function followLinkReducer(state, action) {
   if (action.type === ACTIONS.FOLLOW_LINK.type) {
     const currentPassage = action.nextPassage;
@@ -148,6 +217,13 @@ function followLinkReducer(state, action) {
   };
 }
 
+/**
+ * If `action.type === ACTION.PROMPT_ANSWER.type`, this will take `action.key` and set it to `action.value`,
+ * as well as updating the `needsPrompt` key in the passage to indicate that this prompt has been fulfilled.
+ *
+ * @param {Object} state
+ * @param {Object} action
+ */
 function promptAnswerReducer(state = {}, action) {
   if (action.type === ACTIONS.PROMPT_ANSWER.type) {
     const newState = {
@@ -179,6 +255,12 @@ function promptAnswerReducer(state = {}, action) {
   };
 }
 
+/**
+ * If action.type === ACTIONS.UPDATE_INVENTORY.type, updates the inventory with an inventory list in `action.data`
+ *
+ * @param {Object} state
+ * @param {Object} action
+ */
 function updateInventoryReducer(state, action) {
   if (action.type === ACTIONS.UPDATE_INVENTORY.type) {
     const data = { ...state.data };
@@ -196,6 +278,11 @@ function updateInventoryReducer(state, action) {
   };
 }
 
+/**
+ * If action.type === ACTIONS.SET_DATA.type, takes `action.data` and sets it to `state.data`
+ * @param {Object} state
+ * @param {Object} action
+ */
 function setDataReducer(state, action) {
   if (action.type === ACTIONS.SET_DATA.type) {
     const data = { ...state.data } || {};
@@ -213,6 +300,7 @@ function setDataReducer(state, action) {
   };
 }
 
+/** @type {Function[]} a list of all reducers, to be registered with Genmo at once */
 export const reducers = [
   followLinkReducer,
   promptAnswerReducer,

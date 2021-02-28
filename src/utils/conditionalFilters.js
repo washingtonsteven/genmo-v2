@@ -1,9 +1,28 @@
 import { SPECIAL_DATA_KEYS } from "../state/genmoReducers";
 
+/** @type {RegExp} The regex to parse binary/trinary conditions.  */
 const CONDITION_REGEX = /(!?\w+|\d+)\s+(\w+|\d+)\s*(\w+|\d+)*/;
 
+/** @type {String[]} The operators that require both operands to be numbers */
 const numberOperators = ["lt", "gt", "lte", "gte"];
 
+/**
+ * @typedef Operation
+ * @property {Object} data The source data to check against
+ * @property {String} variable The variable in the data to check
+ * @property {String} operator
+ * @property {String} ref The value to compare `variable` to
+ */
+
+/**
+ * Given the operation and data, returns whether the condition is satisfied.
+ * If the operator requires numbers, and either operand is not, this function returns false.
+ *
+ * Valid operators: gte, lte, lt, gt, eq, seq, has (binary), !has (binary)
+ *
+ * @param {Operation} operation
+ * @return {Boolean}
+ */
 export const checkCondition = ({ data, variable, operator, ref }) => {
   if (numberOperators.indexOf(operator) >= 0) {
     if (!data[variable]) return false;
@@ -62,6 +81,17 @@ export const checkCondition = ({ data, variable, operator, ref }) => {
   return false;
 };
 
+/**
+ * Parses the condition string, and returns whether the condition is satisfied
+ *
+ * A condition string is trinary, e.g. `varName lte 10` checks whether `data.varName` is less than or equal to 10
+ *
+ * There are two binary operators, `has` and `!has`. e.g. `has coin` checks whether `data.inventory` contains a coin.
+ *
+ * @param {String} conditionStr
+ * @param {Object} data
+ * @return {Boolean}
+ */
 const checkConditionString = (conditionStr, data) => {
   let [condition, variable, operator, ref, ...otherMatch] = conditionStr.match(
     CONDITION_REGEX
@@ -79,10 +109,24 @@ const checkConditionString = (conditionStr, data) => {
   return checkCondition({ data, variable, operator, ref });
 };
 
+/**
+ * Returns the item if the condition is met, otherwise returns null.
+ *
+ * @param {String} item
+ * @param {Object} data
+ * @return {Object|null}
+ */
 export const inventoryFilter = (item, data) => {
   return checkConditionString(item.condition, data) ? { ...item } : null;
 };
 
+/**
+ * Returns the link if the condition in the link is met, otherwise null.
+ * Link conditions use `||` to separate the link name from its condition.
+ * @param {Link} link
+ * @param {Object} data
+ * @return {Link|null}
+ */
 export const linkFilter = (link, data) => {
   const filteredLink = { ...link };
   const linkNameParts = filteredLink.name.split("||");
