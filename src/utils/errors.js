@@ -84,3 +84,10 @@ export class InvalidPassageDataError extends GenmoError {
     super(errorInfoStr, errorInfo, 6);
   }
 }
+
+export class InvalidStoryError extends GenmoError {
+  constructor(errorInfo) {
+    const errorInfoStr = "Unable to generate story with storyData provided.";
+    super(errorInfoStr, errorInfo, 7);
+  }
+}

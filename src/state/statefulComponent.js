@@ -1,3 +1,6 @@
+/**
+ * @class
+ */
 class StatefulComponent {
   constructor(initialState = {}, reducers) {
     this.state = { ...initialState };

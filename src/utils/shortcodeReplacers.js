@@ -1,10 +1,35 @@
+/**
+ * @class
+ * @property {Genmo} genmo
+ */
+
+/**
+ * @typedef {Object} ReplacerParams
+ * @property {String} openTag
+ * @property {String} tagArgs
+ * @property {String} tagContents
+ * @property {String} closeTag
+ */
 class ShortcodeReplacers {
+  /**
+   *
+   * @param {Genmo} genmo
+   */
   constructor(genmo) {
     this.genmo = genmo;
   }
+  /**
+   * returns an array of all replacer functions in this class
+   */
   getReplacers() {
     return [this.inventoryHas.bind(this)];
   }
+  /**
+   * Returns `tagContent` in the following conditions:
+   * 1. `openTag` is "inventory_has" AND `genmo` has all items listed in `tagArgs` (separated by spaces) OR
+   * 2. `openTag` is "!inventory_has" AND `genmo` has none of the items listed in `tagArgs`
+   * @param {ReplacerParams} replacerParams
+   */
   inventoryHas({ openTag, tagArgs, tagContent, closeTag }) {
     const items = tagArgs.split(/\s+/);
     if (openTag === "inventory_has") {
