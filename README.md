@@ -1,4 +1,4 @@
-# 📕 Genmo v2 📗 <!-- omit in toc --> BLAH BLAH BLAH
+# 📕 Genmo v2 📗 <!-- omit in toc -->
 
 ## New, updated, sleeker, sexier, adjectivier, and cheesier than ever! 🧀 <!-- omit in toc -->
 
