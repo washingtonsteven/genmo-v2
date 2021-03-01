@@ -22,7 +22,7 @@ jobs:
       - name: Create local changes
         run: |
           git checkout docstest --
-          git pull --rebase origin/main
+          git pull --rebase origin main
           yarn --frozen-lockfile
           yarn docs:build
       - name: Commit files
