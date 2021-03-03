@@ -4,8 +4,6 @@
  * @property {Genmo} genmo
  */
 
-import { SPECIAL_DATA_KEYS } from "../state/genmoReducers";
-
 /**
  * @typedef {Object} ReplacerParams
  * @property {String} openTag

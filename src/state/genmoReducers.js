@@ -1,10 +1,6 @@
 /** @module */
 import { inventoryFilter } from "../utils/conditionalFilters";
-import {
-  InvalidDataKeyError,
-  InvalidPassageDataError,
-  LinkNotFoundError,
-} from "../utils/errors";
+import { InvalidDataKeyError, InvalidPassageDataError } from "../utils/errors";
 
 /**
  * @type {Object}
@@ -59,17 +55,13 @@ export const SPECIAL_DATA_KEYS = {
   INVENTORY: "inventory",
   INVENTORY_ADD: "inventory_add",
   INVENTORY_REMOVE: "inventory_remove",
-  SHORTCODES: "shortcodes",
 };
 
 /**
  * @type {String[]}
  * @description A list of keys that should not be overwritten by in-passage data.
  */
-export const PROTECTED_DATA_KEYS = [
-  SPECIAL_DATA_KEYS.INVENTORY,
-  SPECIAL_DATA_KEYS.SHORTCODES,
-];
+export const PROTECTED_DATA_KEYS = [SPECIAL_DATA_KEYS.INVENTORY];
 
 /**
  * Returns whether the key is okay to use (based on PROTECTED_DATA_KEYS)
