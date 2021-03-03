@@ -140,7 +140,7 @@ export class Genmo extends StatefulComponent {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
 
-    const text = Handlebars.compile(parts[0], this.state.data);
+    const text = Handlebars.compile(parts[0])(this.state.data);
     const variablesReplaced = replaceVariables(text, this.state.data);
     const shortCodesReplaced = replaceShortCodes(
       variablesReplaced,

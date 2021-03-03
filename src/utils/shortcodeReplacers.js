@@ -22,16 +22,20 @@ class ShortcodeReplacers {
   constructor(genmo, Handlebars) {
     this.genmo = genmo;
     const convertibleShortcodes = {
-      inventory_has: this.inventoryHas.bind(this),
-      "!inventory_has": this.inventoryHas.bind(this),
+      inventory_has: { fn: this.inventoryHas.bind(this), argName: "items" },
+      inventory_not_has: { fn: this.inventoryHas.bind(this), argName: "items" },
     };
 
-    Object.entries(convertibleShortcodes).forEach(([shortcode, fn]) => {
-      Handlebars.registerHelper(
-        shortcode,
-        this.createHandlebarsHelper(shortcode, fn)
-      );
-    });
+    var self = this;
+    Object.entries(convertibleShortcodes).forEach(
+      ([shortcode, { fn, argName }]) => {
+        var s = this;
+        Handlebars.registerHelper(
+          shortcode,
+          this.createHandlebarsHelper(shortcode, fn, argName)
+        );
+      }
+    );
   }
   /**
    * returns an array of all replacer functions in this class
@@ -44,14 +48,15 @@ class ShortcodeReplacers {
    * Generates a Handlerbars helper function based on a Genmo shortcode function
    * @param {String} name
    * @param {Function} fn
+   * @param {String} [argName]
    */
-  createHandlebarsHelper(name, fn) {
+  createHandlebarsHelper(name, fn, argName) {
     const thisGenmo = this.genmo; // may not be needed, scoping is weird in this fn
     return (context, options) => {
       return fn({
         openTag: name,
-        tagArgs: Object.keys(context).join(" "),
-        tagContent: options.fn(thisGenmo.getData()),
+        tagArgs: argName ? context.hash[argName] : "",
+        tagContent: context.fn(thisGenmo.getData()),
         closeTag: name,
       });
     };
@@ -75,7 +80,10 @@ class ShortcodeReplacers {
         }
       });
       if (hasAllItemsInList) return tagContent;
-    } else if (openTag === "!inventory_has") {
+    } else if (
+      openTag === "!inventory_has" ||
+      openTag === "inventory_not_has"
+    ) {
       let doesNotHaveAnyItemsInList = true;
       items.forEach((item) => {
         if (this.genmo.hasItem(item)) {
