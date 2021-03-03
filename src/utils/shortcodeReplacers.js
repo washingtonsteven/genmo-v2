@@ -15,7 +15,7 @@ import { SPECIAL_DATA_KEYS } from "../state/genmoReducers";
  */
 class ShortcodeReplacers {
   /**
-   *
+   * Sets up custom shortcodes and Custom Block Helpers in Handlerbars
    * @param {Genmo} genmo
    * @param {Handlebars} Handlebars Handlebars instance from `import Handlebars from 'handlebars'`
    */
@@ -26,10 +26,8 @@ class ShortcodeReplacers {
       inventory_not_has: { fn: this.inventoryHas.bind(this), argName: "items" },
     };
 
-    var self = this;
     Object.entries(convertibleShortcodes).forEach(
       ([shortcode, { fn, argName }]) => {
-        var s = this;
         Handlebars.registerHelper(
           shortcode,
           this.createHandlebarsHelper(shortcode, fn, argName)
@@ -51,12 +49,15 @@ class ShortcodeReplacers {
    * @param {String} [argName]
    */
   createHandlebarsHelper(name, fn, argName) {
-    const thisGenmo = this.genmo; // may not be needed, scoping is weird in this fn
-    return (context, options) => {
+    // docs say that `context` should be the second arg (the first being `options` which has `fn`)
+    // i.e. (options, context) => options.fn()
+    // see: https://handlebarsjs.com/guide/block-helpers.html#the-with-helper
+    // inspecing during tests shows that it's `context.fn` instead. It's weird.
+    return (context) => {
       return fn({
         openTag: name,
         tagArgs: argName ? context.hash[argName] : "",
-        tagContent: context.fn(thisGenmo.getData()),
+        tagContent: context.fn(this.genmo.getData()),
         closeTag: name,
       });
     };
@@ -66,6 +67,9 @@ class ShortcodeReplacers {
    * 1. `openTag` is "inventory_has" AND `genmo` has all items listed in `tagArgs` (separated by spaces) OR
    * 2. `openTag` is "!inventory_has" AND `genmo` has none of the items listed in `tagArgs`
    * If these conditions aren't met, returns an empty string.
+   *
+   * Alternate form of "!inventory_has" is "inventory_not_has", since Handlebars doesn't like starting with !
+   * // potential TODO: actually implement detecting !
    *
    * @param {ReplacerParams} replacerParams
    * @return {String}
