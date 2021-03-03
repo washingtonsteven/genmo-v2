@@ -204,6 +204,14 @@ describe("variable interpolation", () => {
       expect.stringContaining(expectedOutputWithoutData)
     );
   });
+
+  test("Works with Mustache template", () => {
+    genmo.setData({ age: 16 });
+    const passage = {
+      text: "My age is {{age}}",
+    };
+    expect(genmo.getPassageText(passage)).toEqual("My age is 16");
+  });
 });
 
 describe("prompt", () => {
@@ -378,6 +386,34 @@ describe("shortcodes", () => {
       outputFunction: (passage) => passage.passageText,
       errorFunction: returnError,
     });
+  });
+
+  test("Works with Mustache", () => {
+    genmo.updateInventory({
+      coin: 1,
+      toy: 0,
+      book: 1,
+    });
+    genmo.setData({
+      age: 16,
+    });
+    const passage = {
+      text: `
+      {{#inventory_has items="coin"}}You have a coin and you are {{age}}{{/inventory_has}}
+      {{#inventory_has items="toy"}}You have a toy{{/inventory_has}}
+      {{#inventory_not_has items="toothbrush"}}You don't have a toothbrush{{/inventory_not_has}}
+      {{#inventory_has items="coin book"}}You have a coin and a book{{/inventory_has}}
+      `,
+    };
+
+    expect(genmo.getPassageText(passage)).toMatch(
+      "You have a coin and you are 16"
+    );
+    expect(genmo.getPassageText(passage)).not.toMatch("You have a toy");
+    expect(genmo.getPassageText(passage)).toMatch(
+      "You don't have a toothbrush"
+    );
+    expect(genmo.getPassageText(passage)).toMatch("You have a coin and a book");
   });
 
   test("inventory_has", () => {
