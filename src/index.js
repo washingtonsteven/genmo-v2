@@ -322,7 +322,7 @@ export class Genmo extends StatefulComponent {
   onError(err) {
     this.errorFunction(err);
   }
-  noop() {}
+  noop() { }
 }
 
 export * as ERRORS from "./utils/errors";
