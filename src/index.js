@@ -14,6 +14,7 @@ import {
   PassageNotFoundError,
 } from "./utils/errors";
 import { ShortcodeReplacers } from "./utils/shortcodeReplacers";
+import Handlebars from "handlebars";
 
 /**
  * @typedef {String} Pid Number string identifier for a passage
@@ -92,7 +93,7 @@ export class Genmo extends StatefulComponent {
 
     this.followLink(storyData.startnode);
 
-    this.shortCodeReplacers = new ShortcodeReplacers(this);
+    this.shortCodeReplacers = new ShortcodeReplacers(this, Handlebars);
   }
   /**
    * Calls the provided `outputFunction` during construction with the current passage.
@@ -139,7 +140,7 @@ export class Genmo extends StatefulComponent {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
 
-    const text = parts[0];
+    const text = Handlebars.compile(parts[0], this.state.data);
     const variablesReplaced = replaceVariables(text, this.state.data);
     const shortCodesReplaced = replaceShortCodes(
       variablesReplaced,
@@ -322,7 +323,7 @@ export class Genmo extends StatefulComponent {
   onError(err) {
     this.errorFunction(err);
   }
-  noop() { }
+  noop() {}
 }
 
 export * as ERRORS from "./utils/errors";

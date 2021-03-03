@@ -16,7 +16,7 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "mustache": "^4.1.0"
+    "handlebars": "^4.7.7"
   },
   "scripts": {
     "prebuild": "yarn run clean",

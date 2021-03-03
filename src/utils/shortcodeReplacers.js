@@ -4,6 +4,8 @@
  * @property {Genmo} genmo
  */
 
+import { SPECIAL_DATA_KEYS } from "../state/genmoReducers";
+
 /**
  * @typedef {Object} ReplacerParams
  * @property {String} openTag
@@ -15,9 +17,21 @@ class ShortcodeReplacers {
   /**
    *
    * @param {Genmo} genmo
+   * @param {Handlebars} Handlebars Handlebars instance from `import Handlebars from 'handlebars'`
    */
-  constructor(genmo) {
+  constructor(genmo, Handlebars) {
     this.genmo = genmo;
+    const convertibleShortcodes = {
+      inventory_has: this.inventoryHas.bind(this),
+      "!inventory_has": this.inventoryHas.bind(this),
+    };
+
+    Object.entries(convertibleShortcodes).forEach(([shortcode, fn]) => {
+      Handlebars.registerHelper(
+        shortcode,
+        this.createHandlebarsHelper(shortcode, fn)
+      );
+    });
   }
   /**
    * returns an array of all replacer functions in this class
@@ -25,6 +39,22 @@ class ShortcodeReplacers {
    */
   getReplacers() {
     return [this.inventoryHas.bind(this)];
+  }
+  /**
+   * Generates a Handlerbars helper function based on a Genmo shortcode function
+   * @param {String} name
+   * @param {Function} fn
+   */
+  createHandlebarsHelper(name, fn) {
+    const thisGenmo = this.genmo; // may not be needed, scoping is weird in this fn
+    return (context, options) => {
+      return fn({
+        openTag: name,
+        tagArgs: Object.keys(context).join(" "),
+        tagContent: options.fn(thisGenmo.getData()),
+        closeTag: name,
+      });
+    };
   }
   /**
    * Returns `tagContent` in the following conditions:
