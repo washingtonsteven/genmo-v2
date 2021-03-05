@@ -377,6 +377,21 @@ describe("inventory", () => {
       expect.arrayContaining(["membership_card"])
     );
   });
+
+  test("add/removeInventory functions", () => {
+    genmo.addInventory("phone");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        phone: 1,
+      })
+    );
+    genmo.removeInventory("phone");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        phone: 0,
+      })
+    );
+  });
 });
 
 describe("shortcodes", () => {
