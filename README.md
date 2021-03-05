@@ -6,6 +6,9 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
 
 ---
 ## Table of Contents <!-- omit in toc -->
+- [Installation / Quick Start](#installation--quick-start)
+  - [Install](#install)
+  - [Quick Start](#quick-start)
 - [Generating Stories](#generating-stories)
   - [Story Data](#story-data)
   - [Inserting data into text](#inserting-data-into-text)
@@ -32,6 +35,38 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
   - [`state`](#state)
 
 ---
+
+### Installation / Quick Start
+
+#### Install
+
+```sh
+yarn add @esaevian/genmo-v2
+# or
+npm install @esaevian/genmo-v2
+```
+
+#### Quick Start
+
+1. Install [Twine](https://twinery.org/) and the [Twison](https://github.com/lazerwalker/twison) story format
+2. Write your story in Twine, save the JSON within your project.
+3. Import Genmo, initialize it with your story data, and define an `outputFunction` to display the current passage:
+
+```js
+import { Genmo } from "@esaevian/genmo-v2";
+import MyStoryJSON from "./MyStory.json";
+
+const story = new Genmo(MyStoryJSON, {
+  outputFunction(passage) {
+    // Display `passage.text` for user, and `passage.links` for navigation
+  },
+  errorFunction(err) {
+    // Deal with `err`
+  }
+})
+```
+
+
 
 ### Generating Stories
 
