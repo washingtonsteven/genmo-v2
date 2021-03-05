@@ -15,8 +15,9 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
   - [Prompting for data](#prompting-for-data)
   - [Conditional Links](#conditional-links)
   - [Managing Player Inventory](#managing-player-inventory)
-  - [Shortcodes](#shortcodes)
-    - [`has_inventory` and `!has_inventory`](#has_inventory-and-has_inventory)
+  - [Shortcodes / Blocks](#shortcodes--blocks)
+    - [`inventory_has` and `inventory_not_has`](#inventory_has-and-inventory_not_has)
+  - [Comments](#comments)
 - [Usage](#usage)
   - [Options](#options)
     - [`outputFunction`](#outputfunction)
@@ -128,11 +129,12 @@ After the last two example blocks, `hp` will be set to `8`
 
 #### Inserting data into text
 
-Data can be insert into the passage text by wrapping the variable name in `#{<variableName>}`. For example:
+Genmo uses [Handlebars](https://handlebarsjs.com/) to replace variables from your data within the text.
+For example:
 
 ```
 The orc hits you for 2 damage!
-Your HP is #{hp}
+Your HP is {{hp}}
 
 ---
 
@@ -255,41 +257,48 @@ Will remove one (1) `broken_sword` from the inventory. Note that inventory items
 
 Naturally, there isn't a lot of information in this about _what_ the inventory items actually are. The keys in this object can (should?) be used as keys in your application's item database so details about items (descriptions, images, flavor text) can be kept in application code.
 
-#### Shortcodes
+**Recommendataion Two, _Recommend Harder_:** Keep in mind that inventory items are usually only added or removed one at a time. While Genmo does offer the ability to add multiples of an item, consider whether you want to use the inventory system for this, or if you just want to use a standard data. For example, while "The Haunted Coin or Gorgnax" would be a good inventory item, "coins" used as currency (which the player can have tens, hundreds, or even thousands of), would be better used as a standard piece of data.
+
+#### Shortcodes / Blocks
 
 Some shortcodes are available to modify your text on the fly. Shortcodes are typically follow the following format:
 
 ```
-#{shortcodeName argument1 argument2}Text content here to be modified by the shortcode#{/shortcodeName}
+{{#shortcodeName arg="argument1"}Text content here to be modified by the shortcode{{/shortcodeName}}
 ```
 
-This format is fairly strict; any unexpected output around shortcodes should be inspected for proper format (I personally have forgotten the ending `/` in the closing shortcode tag a bunch).
+If you are familiar with Handlebars, you'll notice that shortcodes look a lot like [block helpers](https://handlebarsjs.com/guide/block-helpers.html#basic-blocks). That's because they are! That means the built-in Handlebars helpers are available for you to use, as well as custom shortcodes mentioned below.
 
-Shortcodes cannot be nested, any shortcodes within a shortcode text content will not be processed. Data within a shortcode will be replaced, however.
+**Note:** While not yet available, I'm hoping to add the ability to supply your own custom helpers in the initialization of Genmo.
 
-Also, line breaks around the shortcodes are not cleaned up, so excessive shortcode use, or using line breaks around the codes may result in a lot of new lines. This can be mitigated by collapsing line breaks with `trim()` or something like `replace(/[\r\n]+/, "\n")`, to limit line breaks to one.
-
-##### `has_inventory` and `!has_inventory`
+##### `inventory_has` and `inventory_not_has`
 
 These shortcodes will show/hide the text content based on whether the player has (or doesn't have) a set of specified items in their inventory.
 
 ```
-#{inventory_has coin}You have a coin!#{/inventory_has}
+{{#inventory_has items="coin"}}You have a coin!{{/inventory_has}}
 ```
 
-In the opening tag, you can supply a space-separate list of items that the player must have ALL of in order for the text to show:
+In the `items` argument, you can supply a space-separate list of items that the player must have ALL of in order for the text to show:
 
 ```
-#{inventory_has coin book}You have a coin and a book#{/inventory_has}
+{{#inventory_has items="coin book"}}You have a coin and a book{{/inventory_has}}
 ```
 
-`!has_inventory works the same, but asserts that a player doesn't have an item. If multiple items are specified, the player must not have any of the items in the list:
+`inventory_not_has` works the same, but asserts that a player doesn't have an item. If multiple items are specified, the player must not have any of the items in the list:
 
 ```
-#{!inventory_has tea coffee}You don't have tea OR coffee#{/!inventory_has}
+{{inventory_not_has items="tea coffee"}}You don't have tea OR coffee{{/inventory_not_has}}
 ```
 
-(Note that the closing tag has both the `/` for closing the tag, and `!` from the shortcodeName)
+#### Comments
+
+You can insert comments into your Twine story (in you need to notate some particularly complex story decision) using standard [Handlebars comments](https://handlebarsjs.com/examples/comments.html).
+
+```
+{{! NOTE: Zebulon wouldn't do this, rewrite this passage with a Hoobastank song instead}}
+Zebulon steps up on stage and blasts out a perfect rendition of Bohemian Rhapsody.
+```
 
 ### Usage
 
