@@ -55,6 +55,7 @@ export const SPECIAL_DATA_KEYS = {
   INVENTORY: "inventory",
   INVENTORY_ADD: "inventory_add",
   INVENTORY_REMOVE: "inventory_remove",
+  PASSAGE_DATA: "passage_data",
 };
 
 /**
@@ -200,6 +201,14 @@ function followLinkReducer(state, action) {
           }
         }
       });
+    }
+
+    // Reset passage data if we didn't already set it above
+    if (
+      !newData ||
+      !Object.keys(newData).find((k) => k === SPECIAL_DATA_KEYS.PASSAGE_DATA)
+    ) {
+      data[SPECIAL_DATA_KEYS.PASSAGE_DATA] = {};
     }
 
     return {

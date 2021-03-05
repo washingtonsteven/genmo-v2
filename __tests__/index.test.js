@@ -119,7 +119,7 @@ describe("data update", () => {
 
   test("able to fetch data for current passage, or null", () => {
     genmo.followLink(GenmoTest.passages[1].pid);
-    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+    expect(genmo.getRawPassageData(genmo.getCurrentPassage())).toStrictEqual(
       expect.objectContaining({
         s: "--2",
         d: "++5",
@@ -127,14 +127,14 @@ describe("data update", () => {
       })
     );
     genmo.followLink(genmo.getCurrentPassage().links[1]);
-    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+    expect(genmo.getRawPassageData(genmo.getCurrentPassage())).toStrictEqual(
       expect.objectContaining({
         inventory_add: ["book", "toothpaste"],
       })
     );
     genmo.followLink("1");
     genmo.followLink("5");
-    expect(genmo.getPassageData(genmo.getCurrentPassage())).toBeNull();
+    expect(genmo.getRawPassageData(genmo.getCurrentPassage())).toBeNull();
   });
 
   test("able to set data manually", () => {
@@ -333,7 +333,7 @@ describe("inventory", () => {
 
   test("Inventory positive conditionals", () => {
     genmo.followLink("2");
-    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+    expect(genmo.getRawPassageData(genmo.getCurrentPassage())).toStrictEqual(
       expect.objectContaining({
         inventory_add: expect.objectContaining({
           condition: expect.stringMatching(/^has/),
@@ -358,7 +358,7 @@ describe("inventory", () => {
 
   test("Inventory negative conditionals", () => {
     genmo.followLink("9");
-    expect(genmo.getPassageData(genmo.getCurrentPassage())).toStrictEqual(
+    expect(genmo.getRawPassageData(genmo.getCurrentPassage())).toStrictEqual(
       expect.objectContaining({
         inventory_add: expect.objectContaining({
           condition: expect.stringMatching(/^!has/),
@@ -453,6 +453,44 @@ describe("shortcodes", () => {
     );
     expect(genmo.outputCurrentPassage()).not.toEqual(
       expect.stringContaining(noToothpaste)
+    );
+  });
+});
+
+describe("transient/passage data", () => {
+  let genmo;
+  beforeEach(() => {
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: outputPid,
+      errorFunction: returnError,
+    });
+  });
+
+  test("Passage data exists", () => {
+    expect(Object.keys(genmo.getPassageData())).toStrictEqual([]);
+
+    // goto passage
+    genmo.followLink("10");
+    expect(genmo.getPassageData()).toStrictEqual({
+      room_has_moose: true,
+    });
+    expect(genmo.state.data).toStrictEqual(
+      expect.objectContaining({
+        stickiness: 10,
+        passage_data: {
+          room_has_moose: true,
+        },
+      })
+    );
+
+    // back away from passage
+    genmo.followLink("1");
+    expect(Object.keys(genmo.getPassageData())).toStrictEqual([]);
+    expect(genmo.state.data).toStrictEqual(
+      expect.objectContaining({
+        stickiness: 10,
+        passage_data: {},
+      })
     );
   });
 });

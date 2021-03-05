@@ -154,7 +154,7 @@ export class Genmo extends StatefulComponent {
    * @param {Passage|null} passage
    * @return {Object|null}
    */
-  getPassageData(passage) {
+  getRawPassageData(passage) {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
 
@@ -337,6 +337,13 @@ export class Genmo extends StatefulComponent {
     this.updateInventory({
       [item]: -1,
     });
+  }
+  /**
+   * Gets the `passage_data` object for the current passage, or an empty Object if it isn't set.
+   * @returns {Object}
+   */
+  getPassageData() {
+    return this.state.data[SPECIAL_DATA_KEYS.PASSAGE_DATA] || {};
   }
   /**
    * Handles the error passed in. Default is to call `errorFunction`
