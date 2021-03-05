@@ -3,12 +3,22 @@
  * @property {Object} state
  * @property {Function[]} reducers
  * @property {Object[]} actions
+ * @property {Object[]} previousStates
  */
 class StatefulComponent {
   constructor(initialState = {}, reducers) {
     this.state = { ...initialState };
     this.reducers = [];
-    this.actions = [];
+    this.actions = [
+      {
+        type: "@@INIT",
+      },
+    ];
+    this.previousStates = [
+      {
+        ...this.state,
+      },
+    ];
     this.addReducer(reducers);
   }
   /**
@@ -23,7 +33,7 @@ class StatefulComponent {
       .filter((f) => typeof f === "function");
   }
   /**
-   * Replaces `state` with provided `newState`, then calls `callback` if provided.
+   * Merges `newState` into `state`, then calls `callback` if provided.
    * @param {Object} newState
    * @param {Function} [callback]
    */
@@ -61,7 +71,8 @@ class StatefulComponent {
       }
     }
     this.setState(updatedState);
-    this.actions.push(action);
+    this.actions.push({ ...action });
+    this.previousStates.push({ ...updatedState });
 
     this.doCallback(callback, ...callbackArgs);
   }
