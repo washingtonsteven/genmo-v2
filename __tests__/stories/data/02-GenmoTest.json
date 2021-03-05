@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -44,6 +44,11 @@
           "name": "Conditional !has coin",
           "link": "Conditional !has coin",
           "pid": "9"
+        },
+        {
+          "name": "Passage Data",
+          "link": "Passage Data",
+          "pid": "10"
         }
       ],
       "name": "Start",
@@ -212,8 +217,24 @@
       "name": "Conditional !has coin",
       "pid": "9",
       "position": {
-        "x": "108.66666666666663",
-        "y": "101.66666666666663"
+        "x": "108",
+        "y": "101"
+      }
+    },
+    {
+      "text": "This Passage has some transient data in it\n\n---\n\n[[Start]] \n\n---\n\n{\n\"stickiness\": 10,\n\"passage_data\":{\n\"room_has_moose\": true\n}\n}",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Passage Data",
+      "pid": "10",
+      "position": {
+        "x": "940.3333333333334",
+        "y": "275"
       }
     }
   ],
