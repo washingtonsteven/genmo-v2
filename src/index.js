@@ -320,9 +320,37 @@ export class Genmo extends StatefulComponent {
       items,
     });
   }
+  /**
+   *
+   * @param {String} item
+   */
+  addInventory(item) {
+    this.updateInventory({
+      [item]: 1,
+    });
+  }
+  /**
+   *
+   * @param {String} item
+   */
+  removeInventory(item) {
+    this.updateInventory({
+      [item]: -1,
+    });
+  }
+  /**
+   * Handles the error passed in. Default is to call `errorFunction`
+   *
+   * @ignore
+   * @param {Error} err
+   */
   onError(err) {
     this.errorFunction(err);
   }
+  /**
+   * A noop function as a placeholder for outputFunction / errorFunction
+   * @ignore
+   */
   noop() {}
 }
 
