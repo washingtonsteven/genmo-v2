@@ -125,7 +125,7 @@ export class Genmo extends StatefulComponent {
    * Returns whether this passage is valid or not. A valid passage is an object that has a key `pid` that matches an object in `state.storyData.passages`
    *
    * @param {Passage|null} passage
-   * @returns
+   * @returns {Boolean}
    */
   isValidPassage(passage) {
     if (!passage) return false;
