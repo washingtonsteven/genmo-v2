@@ -209,6 +209,7 @@ describe("variable interpolation", () => {
     genmo.setData({ age: 16 });
     const passage = {
       text: "My age is {{age}}",
+      pid: "1",
     };
     expect(genmo.getPassageText(passage)).toEqual("My age is 16");
   });
@@ -419,6 +420,7 @@ describe("shortcodes", () => {
       {{#inventory_not_has items="toothbrush"}}You don't have a toothbrush{{/inventory_not_has}}
       {{#inventory_has items="coin book"}}You have a coin and a book{{/inventory_has}}
       `,
+      pid: "1",
     };
 
     expect(genmo.getPassageText(passage)).toMatch(

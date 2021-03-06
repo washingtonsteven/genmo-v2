@@ -122,18 +122,37 @@ export class Genmo extends StatefulComponent {
     return passage;
   }
   /**
+   * Returns whether this passage is valid or not. A valid passage is an object that has a key `pid` that matches an object in `state.storyData.passages`
+   *
+   * @param {Passage|null} passage
+   * @returns
+   */
+  isValidPassage(passage) {
+    if (!passage) return false;
+    return Boolean(
+      this.state.storyData.passages.find((p) => p.pid === passage.pid)
+    );
+  }
+  /**
    * Splits up the passage based on `DIVIDER`
-   * @param {Passage} passage
+   * If `passage` is not specified, `currentPassage` is used instead.
+   * @param {Passage|null} passage
+   * @throws {PassageNotFoundError}
    * @ignore
    */
   splitPassage(passage) {
-    if (!passage || !passage.text) return null;
-    return passage.text.split(DIVIDER);
+    const targetPassage = this.isValidPassage(passage)
+      ? passage
+      : this.getCurrentPassage();
+    if (!targetPassage)
+      this.onError(new PassageNotFoundError({ pid: (passage || {}).pid }));
+    return targetPassage.text.split(DIVIDER);
   }
   /**
    * Returns just the text of the passage, with variables replaced and shortcodes processed.
+   * If `passage` is not specified, `currentPassage` is used instead.
    *
-   * @param {Passage} passage
+   * @param {Passage|null} passage
    * @return {String}
    */
   getPassageText(passage) {
@@ -151,6 +170,46 @@ export class Genmo extends StatefulComponent {
   }
   /**
    * Returns the data object associated with this passage, if it exists.
+   * If `passage` is not specified, `currentPassage` is used instead.
+   *
+   * @param {Passage|null} passage
+   * @return {String}
+   */
+  getPassageText(passage) {
+    const parts = this.splitPassage(passage);
+
+    const text = Handlebars.compile(parts[0])(this.state.data);
+    const variablesReplaced = replaceVariables(text, this.state.data);
+    const shortCodesReplaced = replaceShortCodes(
+      variablesReplaced,
+      this.shortCodeReplacers.getReplacers()
+    );
+
+    return shortCodesReplaced;
+  }
+  /**
+   * Returns the data object associated with this passage, if it exists.
+   * If `passage` is not specified, `currentPassage` is used instead.
+   *
+   * @param {Passage|null} passage
+   * @return {String}
+   */
+  getPassageText(passage) {
+    const parts = this.splitPassage(passage);
+
+    const text = Handlebars.compile(parts[0])(this.state.data);
+    const variablesReplaced = replaceVariables(text, this.state.data);
+    const shortCodesReplaced = replaceShortCodes(
+      variablesReplaced,
+      this.shortCodeReplacers.getReplacers()
+    );
+
+    return shortCodesReplaced;
+  }
+  /**
+   * Returns the data object associated with this passage, if it exists.
+   * If `passage` is not specified, `currentPassage` is used instead.
+   *
    * @param {Passage|null} passage
    * @return {Object|null}
    */
@@ -167,6 +226,39 @@ export class Genmo extends StatefulComponent {
     }
 
     return parsed;
+  }
+  /**
+   * Gets the `passage_data` object for the current passage, or an empty Object if it isn't set.
+   * If `passage` is not specified, `currentPassage` is used instead.
+   *
+   * @param {Passage|null} passage
+   * @return {Object|null}
+   */
+  getRawPassageData(passage) {
+    const parts = this.splitPassage(passage);
+    if (!parts) return null;
+
+    const json = parts[parts.length - 1];
+    let parsed = null;
+    try {
+      parsed = JSON.parse(json);
+    } catch (e) {
+      // That wasn't JSON we just parsed, oh well.
+    }
+
+    return parsed;
+  }
+  /**
+   * Gets the `passage_data` object for the current passage, or an empty Object if it isn't set.
+   * If `passage` is not specified, `currentPassage` is used instead.
+   *
+   * @param {Passage|null} passage
+   * @returns {Object}
+   */
+  getPassageData(passage) {
+    return (
+      this.getRawPassageData(passage)[SPECIAL_DATA_KEYS.PASSAGE_DATA] || {}
+    );
   }
   /**
    * Merges `data` with Genmo's `state.data`
@@ -337,13 +429,6 @@ export class Genmo extends StatefulComponent {
     this.updateInventory({
       [item]: -1,
     });
-  }
-  /**
-   * Gets the `passage_data` object for the current passage, or an empty Object if it isn't set.
-   * @returns {Object}
-   */
-  getPassageData() {
-    return this.state.data[SPECIAL_DATA_KEYS.PASSAGE_DATA] || {};
   }
   /**
    * Handles the error passed in. Default is to call `errorFunction`
