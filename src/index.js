@@ -232,32 +232,12 @@ export class Genmo extends StatefulComponent {
    * If `passage` is not specified, `currentPassage` is used instead.
    *
    * @param {Passage|null} passage
-   * @return {Object|null}
-   */
-  getRawPassageData(passage) {
-    const parts = this.splitPassage(passage);
-    if (!parts) return null;
-
-    const json = parts[parts.length - 1];
-    let parsed = null;
-    try {
-      parsed = JSON.parse(json);
-    } catch (e) {
-      // That wasn't JSON we just parsed, oh well.
-    }
-
-    return parsed;
-  }
-  /**
-   * Gets the `passage_data` object for the current passage, or an empty Object if it isn't set.
-   * If `passage` is not specified, `currentPassage` is used instead.
-   *
-   * @param {Passage|null} passage
    * @returns {Object}
    */
   getPassageData(passage) {
     return (
-      this.getRawPassageData(passage)[SPECIAL_DATA_KEYS.PASSAGE_DATA] || {}
+      (this.getRawPassageData(passage) || {})[SPECIAL_DATA_KEYS.PASSAGE_DATA] ||
+      {}
     );
   }
   /**
