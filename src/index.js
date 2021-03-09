@@ -109,9 +109,27 @@ export class Genmo extends StatefulComponent {
    * @return {Passage}
    */
   getCurrentPassage() {
+    return this.getPassage(this.state.currentPassage);
+  }
+  /**
+   * Returns the passage indicated by passageOrPid, with `passageText` set and `passage.link` properly filtered.
+   * Returns null if passage is not found.
+   *
+   * @param {Passage|Pid} passageOrPid
+   * @returns {Passage}
+   */
+  getPassage(passageOrPid) {
+    const pid = passageOrPid.pid ? passageOrPid.pid : passageOrPid;
+
+    if (!pid) return null;
+
     const passage = {
-      ...this.state.currentPassage,
+      ...(this.state.storyData.passages.find(
+        (passage) => passage.pid === pid
+      ) || {}),
     };
+
+    if (!Object.keys(passage).length) return null;
 
     passage.passageText = this.getPassageText(passage);
 
@@ -120,6 +138,18 @@ export class Genmo extends StatefulComponent {
       .filter((l) => l);
 
     return passage;
+  }
+  /**
+   * Returns a passage with the `name` property set to `name`, or null if it doesn't exist.
+   *
+   * @param {String} name
+   * @returns {Passage}
+   */
+  getPassageByName(name) {
+    const passage = {
+      ...this.state.storyData.passages.find((passage) => passage.name === name),
+    };
+    return this.getPassage(passage);
   }
   /**
    * Returns whether this passage is valid or not. A valid passage is an object that has a key `pid` that matches an object in `state.storyData.passages`
