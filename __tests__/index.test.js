@@ -37,6 +37,13 @@ describe("basic setup", () => {
       })
     );
   });
+  test("getPassageByName", () => {
+    const genmo = new Genmo(GenmoTest);
+    const passage = GenmoTest.passages.find((p) => p.pid === "4");
+    const foundPassage = genmo.getPassageByName(passage.name);
+
+    expect(foundPassage).toStrictEqual(expect.objectContaining(passage));
+  });
 });
 
 describe("basic navigation", () => {
