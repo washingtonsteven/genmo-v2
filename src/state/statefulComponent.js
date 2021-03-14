@@ -9,16 +9,8 @@ class StatefulComponent {
   constructor(initialState = {}, reducers) {
     this.state = { ...initialState };
     this.reducers = [];
-    this.actions = [
-      {
-        type: "@@INIT",
-      },
-    ];
-    this.previousStates = [
-      {
-        ...this.state,
-      },
-    ];
+    this.actions = [];
+    this.previousStates = [];
     this.addReducer(reducers);
   }
   /**
@@ -70,9 +62,10 @@ class StatefulComponent {
         break;
       }
     }
+    const previousState = { ...this.state };
     this.setState(updatedState);
     this.actions.push({ ...action });
-    this.previousStates.push({ ...updatedState });
+    this.previousStates.push(previousState);
 
     this.doCallback(callback, ...callbackArgs);
   }
@@ -86,6 +79,14 @@ class StatefulComponent {
    */
   onError(err) {
     throw err;
+  }
+  /**
+   * Returns the update previous to the current one. If there was no previous state (e.g. there were no updates yet), returns null.
+   * @returns {Object|null}
+   */
+  getPreviousState() {
+    if (!this.previousStates.length) return null;
+    return this.previousStates[this.previousStates.length - 1];
   }
 }
 

@@ -22,6 +22,7 @@ class ShortcodeReplacers {
     const convertibleShortcodes = {
       inventory_has: { fn: this.inventoryHas.bind(this), argName: "items" },
       inventory_not_has: { fn: this.inventoryHas.bind(this), argName: "items" },
+      changed: { fn: this.dataChanged.bind(this), argName: "keys" },
     };
 
     Object.entries(convertibleShortcodes).forEach(
@@ -72,7 +73,7 @@ class ShortcodeReplacers {
    * @param {ReplacerParams} replacerParams
    * @return {String}
    */
-  inventoryHas({ openTag, tagArgs, tagContent, closeTag }) {
+  inventoryHas({ openTag, tagArgs, tagContent }) {
     const items = tagArgs.split(/\s+/);
     if (openTag === "inventory_has") {
       let hasAllItemsInList = true;
@@ -96,6 +97,27 @@ class ShortcodeReplacers {
     }
 
     return "";
+  }
+  dataChanged({ tagArgs, tagContent }) {
+    const keys = tagArgs.split(/\s+/);
+    const currentState = this.genmo.state;
+    const prevState = this.genmo.getPreviousState();
+    let dataHasChanged = true;
+    keys.forEach((key) => {
+      const prevValue = prevState.data[key];
+      const currentValue = currentState.data[key];
+      if (
+        currentValue !== Object(currentValue) ||
+        prevValue !== Object(prevValue)
+      ) {
+        if (currentValue === prevValue) dataHasChanged = false;
+      } else {
+        if (JSON.stringify(prevValue) === JSON.stringify(currentValue))
+          dataHasChanged = false;
+      }
+    });
+
+    return dataHasChanged ? tagContent : "";
   }
 }
 

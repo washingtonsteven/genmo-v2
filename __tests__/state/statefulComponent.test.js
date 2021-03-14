@@ -62,7 +62,7 @@ describe("StatefulComponent", () => {
     expect(reducers[0]).toHaveBeenCalledTimes(1);
     expect(reducers[1]).toHaveBeenCalledWith(initialState, action);
     expect(component.state).toStrictEqual(expect.objectContaining(newState));
-    expect(component.actions.length).toEqual(2);
-    expect(component.previousStates.length).toEqual(2);
+    expect(component.actions.length).toEqual(1);
+    expect(component.previousStates.length).toEqual(1);
   });
 });
