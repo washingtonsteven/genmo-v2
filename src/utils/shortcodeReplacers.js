@@ -98,6 +98,13 @@ class ShortcodeReplacers {
 
     return "";
   }
+  /**
+   * Returns `replacerParams.tagContent` if all of the keys specified in `tagArgs` (space-separated list)
+   * changed in the last update. Compares primitives with strict equality, compares objects via `JSON.stringify`
+   *
+   * @param {ReplacerParams} replacerParams
+   * @returns {String}
+   */
   dataChanged({ tagArgs, tagContent }) {
     const keys = tagArgs.split(/\s+/);
     const currentState = this.genmo.state;
