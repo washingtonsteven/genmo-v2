@@ -53,12 +53,15 @@ class ShortcodeReplacers {
     // see: https://handlebarsjs.com/guide/block-helpers.html#the-with-helper
     // inspecing during tests shows that it's `context.fn` instead. It's weird.
     return (context) => {
-      return fn({
-        openTag: name,
-        tagArgs: argName ? context.hash[argName] : "",
-        tagContent: context.fn(this.genmo.getData()),
-        closeTag: name,
-      });
+      return fn(
+        {
+          openTag: name,
+          tagArgs: argName ? context.hash[argName] : "",
+          tagContent: context.fn(this.genmo.getData()),
+          closeTag: name,
+        },
+        context
+      );
     };
   }
   /**
@@ -103,16 +106,29 @@ class ShortcodeReplacers {
    * changed in the last update. Compares primitives with strict equality, compares objects via `JSON.stringify`
    *
    * @param {ReplacerParams} replacerParams
+   * @param {Object} context The context variable from Handlebars
    * @returns {String}
    */
-  dataChanged({ tagArgs, tagContent }) {
+  dataChanged({ tagArgs, tagContent }, context) {
+    // Default keys
+    let checkingInventory = false;
+    if (!tagArgs) {
+      (tagArgs = context.hash["inventory"]), (checkingInventory = true);
+    }
+    if (!tagArgs) {
+      return "";
+    }
     const keys = tagArgs.split(/\s+/);
     const currentState = this.genmo.state;
     const prevState = this.genmo.getPreviousState();
     let dataHasChanged = true;
     keys.forEach((key) => {
-      const prevValue = prevState.data[key];
-      const currentValue = currentState.data[key];
+      const prevValue = checkingInventory
+        ? prevState.data.inventory[key]
+        : prevState.data[key];
+      const currentValue = checkingInventory
+        ? currentState.data.inventory[key]
+        : currentState.data[key];
       if (
         currentValue !== Object(currentValue) ||
         prevValue !== Object(prevValue)

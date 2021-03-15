@@ -465,7 +465,7 @@ describe("shortcodes", () => {
     );
   });
 
-  test("changed", () => {
+  test("changed data", () => {
     genmo.setData({
       age: 16,
       birthYear: 2004,
@@ -500,6 +500,25 @@ describe("shortcodes", () => {
     expect(passageText).toMatch("Changed birth year and fruit");
     expect(passageText).not.toMatch("Changed fruit and age");
     expect(passageText).not.toMatch("Changed complex");
+  });
+  test.only("changed inventory", () => {
+    genmo.updateInventory({
+      egg: 1,
+      milk: 1,
+    });
+    genmo.updateInventory({
+      egg: 2,
+    });
+    const passage = {
+      text: `
+        {{#changed inventory="egg"}}Egg changed{{/changed}}
+        {{#changed inventory="milk"}}Milk changed{{/changed}}
+      `,
+      pid: "1",
+    };
+    const passageText = genmo.getPassageText(passage);
+    expect(passageText).toMatch("Egg changed");
+    expect(passageText).not.toMatch("Milk changed");
   });
 });
 

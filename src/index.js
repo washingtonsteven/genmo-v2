@@ -77,7 +77,9 @@ export class Genmo extends StatefulComponent {
       {
         storyData,
         currentPassage: null,
-        data: {},
+        data: {
+          inventory: {},
+        },
       },
       reducers
     );

@@ -53,7 +53,8 @@ class StatefulComponent {
    * @param  {...any} [callbackArgs]
    */
   doAction(action, callback, ...callbackArgs) {
-    let updatedState = this.state;
+    const previousState = { ...this.state };
+    let updatedState = { ...this.state };
     for (let i = 0; i < this.reducers.length; i++) {
       try {
         updatedState = this.reducers[i](updatedState, action) || updatedState;
@@ -62,7 +63,6 @@ class StatefulComponent {
         break;
       }
     }
-    const previousState = { ...this.state };
     this.setState(updatedState);
     this.actions.push({ ...action });
     this.previousStates.push(previousState);

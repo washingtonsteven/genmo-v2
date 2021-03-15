@@ -59,6 +59,29 @@ export const SPECIAL_DATA_KEYS = {
 };
 
 /**
+ * Clones the `state.data` object, by deeply cloning SPECIAL_DATA_KEYS specifically
+ * Otherwise, just using `{ ...state.data }` would result in nested objects,
+ * (like `inventory`) persisting their references instead of getting cloned.
+ *
+ * @param {Object} data
+ * @returns {Object}
+ * @ignore
+ */
+const cloneData = (data) => {
+  const newData = {
+    ...data,
+  };
+  Object.values(SPECIAL_DATA_KEYS).forEach((key) => {
+    if (data[key] && Object(data[key]) === data[key]) {
+      newData[key] = {
+        ...data[key],
+      };
+    }
+  });
+  return newData;
+};
+
+/**
  * @type {String[]}
  * @description A list of keys that should not be overwritten by in-passage data.
  */
@@ -143,7 +166,7 @@ export const DIVIDER = "\n---\n";
 function followLinkReducer(state, action) {
   if (action.type === ACTIONS.FOLLOW_LINK.type) {
     const currentPassage = action.nextPassage;
-    const data = { ...state.data };
+    const data = cloneData(state.data);
     const newDataJSON = (() => {
       const parts = action.nextPassage.text.split(DIVIDER);
       return parts[parts.length - 1];
@@ -235,6 +258,7 @@ function promptAnswerReducer(state = {}, action) {
   if (action.type === ACTIONS.PROMPT_ANSWER.type) {
     const newState = {
       ...state,
+      data: cloneData(state.data),
     };
     const targetPassage = newState.storyData.passages.find(
       (p) => p.pid === action.pid
@@ -271,7 +295,7 @@ function promptAnswerReducer(state = {}, action) {
  */
 function updateInventoryReducer(state, action) {
   if (action.type === ACTIONS.UPDATE_INVENTORY.type) {
-    const data = { ...state.data };
+    const data = cloneData(state.data);
     Object.entries(action.items).forEach(([key, value]) => {
       updateInventory(data, key, value);
     });
