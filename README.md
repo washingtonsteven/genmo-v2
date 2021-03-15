@@ -32,6 +32,7 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
   - [`updateInventory(Object)`](#updateinventoryobject)
   - [`setData(Object)`](#setdataobject)
   - [`getData()`](#getdata)
+  - [`getPassageData(passage)`](#getpassagedatapassage)
   - [`getRawPassageData(passage)`](#getrawpassagedatapassage)
   - [`state`](#state)
 
@@ -462,13 +463,21 @@ story.getData()
 
 Returns the current data object for the story
 
+#### `getPassageData(passage)`
+
+```js
+story.getPassageData(story.getCurrentPassage())
+```
+
+Gets the `passage_data` object for the current passage i.e. transient data that is only set on the passage given.
+
 #### `getRawPassageData(passage)`
 
 ```js
 story.getRawPassageData(story.getCurrentPassage()) // Or any other passage
 ```
 
-Gets the parsed data for the current passage. Note that any deltas (i.e. `{ s: "--2"}`) will be returned unchanged, that is, as literal strings. Will return null if there is no data for the current passage.
+Gets the parsed data for the current passage. Note that any deltas (i.e. `{ s: "--2"}`) will be returned unchanged, that is, as literal strings. Will return null if there is no data for the current passage. This includes `passage_data`, if set. If you just want just `passage_data` use `getPassageData(passage)`
 
 #### `state`
 
