@@ -1,6 +1,6 @@
 {
   "name": "@esaevian/genmo-v2",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "main": "lib/index.js",
   "author": "Steven Washington <washington.steven@gmail.com>",
   "license": "MIT",
