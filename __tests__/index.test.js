@@ -503,63 +503,7 @@ describe("shortcodes", () => {
       expect.stringContaining(noToothpaste)
     );
   });
-  // Removing changed inventory helper
-  test.skip("changed data", () => {
-    genmo.setData({
-      age: 16,
-      birthYear: 2004,
-      fruit: "orange",
-      complex: {
-        address: "16 Main St",
-        city: "Springfield",
-      },
-    });
-    genmo.setData({
-      age: 16,
-      birthYear: 2005,
-      fruit: "apple",
-      complex: {
-        address: "16 Main St",
-        city: "Springfield",
-      },
-    });
-    const passage = {
-      text: `
-        {{#changed keys="birthYear"}}Updated birth year{{/changed}}
-        {{#changed keys="age"}}Updated age!{{/changed}}
-        {{#changed keys="birthYear fruit"}}Changed birth year and fruit{{/changed}}
-        {{#changed keys="age fruit"}}Changed fruit and age{{/changed}}
-        {{#changed keys="complex"}}Changed complex{{/changed}}
-      `,
-      pid: "1",
-    };
-    const passageText = genmo.getPassageText(passage);
-    expect(passageText).toMatch("Updated birth year");
-    expect(passageText).not.toMatch("Updated age!");
-    expect(passageText).toMatch("Changed birth year and fruit");
-    expect(passageText).not.toMatch("Changed fruit and age");
-    expect(passageText).not.toMatch("Changed complex");
-  });
-  // Removing the changed inventory helper
-  test.skip("changed inventory", () => {
-    genmo.updateInventory({
-      egg: 1,
-      milk: 1,
-    });
-    genmo.updateInventory({
-      egg: 2,
-    });
-    const passage = {
-      text: `
-        {{#changed inventory="egg"}}Egg changed{{/changed}}
-        {{#changed inventory="milk"}}Milk changed{{/changed}}
-      `,
-      pid: "1",
-    };
-    const passageText = genmo.getPassageText(passage);
-    expect(passageText).toMatch("Egg changed");
-    expect(passageText).not.toMatch("Milk changed");
-  });
+
   test("changed data and inventory", () => {
     genmo.followLink("12");
     const passageText = genmo.getPassageText();

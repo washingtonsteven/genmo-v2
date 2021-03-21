@@ -15,8 +15,12 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
   - [Prompting for data](#prompting-for-data)
   - [Conditional Links](#conditional-links)
   - [Managing Player Inventory](#managing-player-inventory)
-  - [Helpers](#helpers)
+  - [Passage Helpers](#passage-helpers)
     - [`inventory_has` and `inventory_not_has`](#inventory_has-and-inventory_not_has)
+    - [`changed`](#changed)
+  - [Data Helpers](#data-helpers)
+    - [`data_set` and `passage_data_set`](#data_set-and-passage_data_set)
+    - [`inventory_add` and `inventory_remove`](#inventory_add-and-inventory_remove)
   - [Comments](#comments)
 - [Usage](#usage)
   - [Options](#options)
@@ -127,6 +131,8 @@ The orc hits you for 2 damage!
 ```
 
 After the last two example blocks, `hp` will be set to `8`
+
+You can also define story data using a Handlebars helper. [Click here to read more about the helpers](#data_set-and-passage_data_set)
 
 #### Inserting data into text
 
@@ -258,9 +264,11 @@ Will remove one (1) `broken_sword` from the inventory. Note that inventory items
 
 Naturally, there isn't a lot of information in this about _what_ the inventory items actually are. The keys in this object can (should?) be used as keys in your application's item database so details about items (descriptions, images, flavor text) can be kept in application code.
 
-**Recommendataion Two, _Recommend Harder_:** Keep in mind that inventory items are usually only added or removed one at a time. While Genmo does offer the ability to add multiples of an item, consider whether you want to use the inventory system for this, or if you just want to use a standard data. For example, while "The Haunted Coin or Gorgnax" would be a good inventory item, "coins" used as currency (which the player can have tens, hundreds, or even thousands of), would be better used as a standard piece of data.
+**Recommendation:** Keep in mind that inventory items are usually only added or removed one at a time. While Genmo does offer the ability to add multiples of an item, consider whether you want to use the inventory system for this, or if you just want to use a standard data. For example, while "The Haunted Coin of Gorgnax" would be a good inventory item, "coins" used as currency (which the player can have tens, hundreds, or even thousands of), would be better used as a standard piece of data.
 
-#### Helpers
+The inventory can also be handled via Helper blocks. [Click here to read about inventory helpers](#inventory_add-and-inventory_remove)
+
+#### Passage Helpers
 
 Some helpers are available to modify your text on the fly. Shortcodes are typically follow the following format:
 
@@ -289,7 +297,84 @@ In the `items` argument, you can supply a space-separate list of items that the 
 `inventory_not_has` works the same, but asserts that a player doesn't have an item. If multiple items are specified, the player must not have any of the items in the list:
 
 ```
-{{inventory_not_has items="tea coffee"}}You don't have tea OR coffee{{/inventory_not_has}}
+{{#inventory_not_has items="tea coffee"}}You don't have tea OR coffee{{/inventory_not_has}}
+```
+
+##### `changed`
+
+This will let you show/hide text based on whether a piece of data change on the last link navigation (i.e. usage of JSON data/inventory management, the `{{#data_set}}` helper, or the `{{inventory_add/remove}}` helpers). Manually updated data/inventory (as in, using `updateData` or `updateInventory` directly) will not be counted as a valid change for this.
+
+```
+{{#changed keys="age"}}Your age changed!{{/changed}}
+
+---
+
+[[Next]]
+
+---
+
+{
+  "age": 17
+}
+```
+
+This will show `Your age changed!` if, upon entering this passage, the `age` was updated to 17. However if the player leaves this passage and returns (without `age` changing somewhere else), the message will not show.
+
+Note that you can also specify an `inventory` attribute to check if something in the user's inventory has changed. However, if both `inventory` and `keys` are present, only `keys` will be checked.
+
+```
+{{#changed inventory="coin"}}The number of coins you have changed{{/changed}}
+```
+
+Right now, there isn't a way to determine whether the change was positive or negative (or neither, in the case of a string change). 
+
+_NB: While you can store complex objects in your data, the `{{#changed}}` helper may not be super helpful, due to how Javascript compares objects, they will always have changed._
+
+#### Data Helpers
+
+Much like the passage helpers above, there are other sets of helpers that allow you to modify the data of your story, if you don't want to use the JSON method outlined above.
+
+##### `data_set` and `passage_data_set`
+
+These are helpers to set data and passage data, like you would in JSON. The following passages are equivalent:
+
+```
+This Passage is using JSON data setting
+
+---
+
+[[Next]]
+
+---
+
+{
+  "fruit": "orange",
+  "passage_data": {
+    "fridge_open": true
+  }
+}
+```
+
+```
+This passage is using data setting via helpers.
+
+{{#data_set fruit="orange}}{{/data_set}}
+{{#passage_data_set fridge_open="true"}}{{/passage_data_set}}
+
+---
+
+[[Next]]
+```
+
+##### `inventory_add` and `inventory_remove`
+
+Like `data_set` and `passage_data_set`, these are analogous to using `inventory_add` and `inventory_remove` JSON keys.
+
+```
+I giveth a bike and a shirt and taketh away a Playstation.
+
+{{#inventory_add items="bike shirt"}}{{/inventory_add}}
+{{#inventory_remove items="playstation"}}{{/inventory_remove}}
 ```
 
 #### Comments
@@ -502,7 +587,7 @@ Genmo keeps track of its state in `state`, there are several properties:
   - `ifid`: String representing an ID to be used in the [Interactive Fiction Database](https://ifdb.tads.org/help-ifid)
 - `currentPassage`: The current passage set. Passage properties are detailed in the [`outputFunction` section](#outputFunction) above
 
-`story.state.data` is the list of custom data applied by inline JSON in Twine.
+`story.state.data` is the list of custom data applied by inline JSON (or Handlebars helpers) in Twine.
 
 
 **As a general rule:** `state` should only be read from, not written to. Writing to state outside of the provided functions (`followLink()`, etc) may cause inconsistent behavior. 
