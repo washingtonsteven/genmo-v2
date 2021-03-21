@@ -48,6 +48,8 @@ export const updateData = (newData, { data, currentPassage }) => {
       const delta = abs_delta * operation;
 
       data[key] += delta;
+
+      return;
     }
 
     if (value === ">>") {
@@ -59,14 +61,18 @@ export const updateData = (newData, { data, currentPassage }) => {
 
         if (keyIndex < 0) currentPassage.needsPrompt.push({ key });
       }
+
+      return;
     }
 
     if (key === SPECIAL_DATA_KEYS.INVENTORY_ADD) {
       updateInventory(data, value, 1);
+      return;
     }
 
     if (key === SPECIAL_DATA_KEYS.INVENTORY_REMOVE) {
       updateInventory(data, value, -1);
+      return;
     }
 
     data[key] = value;

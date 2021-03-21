@@ -195,7 +195,7 @@ describe("variable interpolation", () => {
   });
 
   const expectedOutputWithData = "s is -2\nd is 5\nc is a string guvna";
-  const expectedOutputWithoutData = "s is #{s}\nd is #{d}\nc is #{c}";
+  const expectedOutputWithoutData = "s is \nd is \nc is ";
 
   test("data is output when set", () => {
     genmo.followLink("2");
@@ -440,7 +440,7 @@ describe("shortcodes", () => {
     expect(genmo.getPassageText(passage)).toMatch("You have a coin and a book");
   });
 
-  test.only("inventory_has", () => {
+  test("inventory_has", () => {
     const coinOnly = "You have a coin";
     const noToothpaste = "You don't have toothpaste";
     const coinAndBook = "You have a coin and a book";
