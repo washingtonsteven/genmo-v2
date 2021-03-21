@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n[[Mustache data setting]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -49,6 +49,11 @@
           "name": "Passage Data",
           "link": "Passage Data",
           "pid": "10"
+        },
+        {
+          "name": "Mustache data setting",
+          "link": "Mustache data setting",
+          "pid": "11"
         }
       ],
       "name": "Start",
@@ -235,6 +240,22 @@
       "position": {
         "x": "941.6666666666666",
         "y": "275"
+      }
+    },
+    {
+      "text": "This part of the spider Handles setting data via mustache.\n\n{{#data usingMustacheData=\"true\" aDuckSays=\"quack\" howManyCows=12 isAFarm=false}}{{/data}}\n\n---\n\n[[Start]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Mustache data setting",
+      "pid": "11",
+      "position": {
+        "x": "587",
+        "y": "30"
       }
     }
   ],

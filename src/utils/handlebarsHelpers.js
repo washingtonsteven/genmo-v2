@@ -58,13 +58,22 @@ const setDataHelper = (context, options) => {
 
   const dataObj = {};
   Object.keys(context.hash).forEach((key) => {
-    dataObj[key] = context.hash[key];
+    let value;
+    try {
+      value = JSON.parse(context.hash[key]);
+    } catch (e) {
+      value = context.hash[key];
+    }
+
+    dataObj[key] = value;
   });
 
   updateData(dataObj, {
     data: options.data,
     currentPassage: options.currentPassage,
   });
+
+  return "";
 };
 
 /**

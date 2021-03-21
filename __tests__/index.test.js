@@ -153,6 +153,18 @@ describe("data update", () => {
     genmo.setData(myData);
     expect(genmo.getData()).toStrictEqual(expect.objectContaining(myData));
   });
+
+  test("able to set data via Mustache", () => {
+    genmo.followLink("11");
+    expect(genmo.getData()).toStrictEqual(
+      expect.objectContaining({
+        usingMustacheData: true,
+        aDuckSays: "quack",
+        howManyCows: 12,
+        isAFarm: false,
+      })
+    );
+  });
 });
 
 describe("conditional links", () => {
