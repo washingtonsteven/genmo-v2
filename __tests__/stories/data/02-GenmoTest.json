@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n[[Mustache data setting]]\n[[Changed Helper]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -49,6 +49,16 @@
           "name": "Passage Data",
           "link": "Passage Data",
           "pid": "10"
+        },
+        {
+          "name": "Mustache data setting",
+          "link": "Mustache data setting",
+          "pid": "11"
+        },
+        {
+          "name": "Changed Helper",
+          "link": "Changed Helper",
+          "pid": "12"
         }
       ],
       "name": "Start",
@@ -85,7 +95,7 @@
       }
     },
     {
-      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is #{s}\nd is #{d}\nc is #{c}\n\n---\n\n[[Start]]\n[[Creme de la creme]] \n\n---\n{\n\"inventory_add\":[\"book\",\"toothpaste\"]\n}",
+      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is {{s}}\nd is {{d}}\nc is {{c}}\n\n---\n\n[[Start]]\n[[Creme de la creme]] \n\n---\n{\n\"inventory_add\":[\"book\",\"toothpaste\"]\n}",
       "links": [
         {
           "name": "Start",
@@ -102,11 +112,11 @@
       "pid": "3",
       "position": {
         "x": "110",
-        "y": "465"
+        "y": "463.3333333333333"
       }
     },
     {
-      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n#{inventory_has coin}\nYou have a coin\n#{/inventory_has}\n#{!inventory_has toothpaste}\nYou don't have toothpaste\n#{/!inventory_has}\n#{inventory_has coin book}\nYou have a coin and a book\n#{/inventory_has}\n   \n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
+      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n{{#inventory_has items=\"coin\"}}\nYou have a coin\n{{/inventory_has}}\n{{#inventory_not_has items=\"toothpaste\"}}\nYou don't have toothpaste\n{{/inventory_not_has}}\n{{#inventory_has items=\"coin book\"}}\nYou have a coin and a book\n{{/inventory_has}}\n   \n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
       "links": [
         {
           "name": "Start",
@@ -180,8 +190,8 @@
       "name": "Staring at the truth til I'm blind",
       "pid": "7",
       "position": {
-        "x": "787",
-        "y": "350"
+        "x": "788.6666666666666",
+        "y": "351.6666666666667"
       }
     },
     {
@@ -201,7 +211,7 @@
       }
     },
     {
-      "text": "If you don't have a coin you get a membership card #{inventory_has coin}You have a coin, too bad#{/inventory_has}\n\nSome other text here.\n\n#{!inventory_has coin}You don't have a coin! Congrats, friend#{/inventory_has}\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
+      "text": "If you don't have a coin you get a membership card {{#inventory_has items=\"coin\"}}You have a coin, too bad{{/inventory_has}}\n\nSome other text here.\n\n{{#inventory_not_has items=\"coin\"}}You don't have a coin! Congrats, friend{{/inventory_not_has}}\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
       "links": [
         {
           "name": "Start",
@@ -233,8 +243,40 @@
       "name": "Passage Data",
       "pid": "10",
       "position": {
-        "x": "940.3333333333334",
+        "x": "941.6666666666666",
         "y": "275"
+      }
+    },
+    {
+      "text": "This part of the spider Handles setting data via mustache.\n\n{{#data_set usingMustacheData=\"true\" aDuckSays=\"quack\" howManyCows=12 isAFarm=false}}{{/data_set}}\n\n{{#inventory_add items=\"laptop\"}}{{/inventory_add}}\n{{#inventory_add condition=\"d gte 5\" items=\"another_laptop\"}}{{/inventory_add}}\n\n{{#inventory_remove items=\"coin\"}}{{/inventory_remove}}\n\n{{#passage_data_set spiderIsHere=\"true\" spiderCount=8}}{{/passage_data_set}}\n\n---\n\n[[Start]] ",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Mustache data setting",
+      "pid": "11",
+      "position": {
+        "x": "587",
+        "y": "30"
+      }
+    },
+    {
+      "text": "This is to check the changed helper.\n\n{{#data_set fruit=\"orange\"}}{{/data_set}}\n{{#inventory_add items=\"egg milk\"}}{{/inventory_add}}\n\n{{#changed keys=\"fruit\"}}Changed fruit{{/changed}}\n{{#changed keys=\"cheese\"}}Changed cheese{{/changed}}\n\n{{#changed inventory=\"egg milk\"}}Changed egg and milk{{/changed}}\n{{#changed inventory=\"coin\"}}Changed coin{{/changed}}\n\n---\n\n[[Start]]",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Changed Helper",
+      "pid": "12",
+      "position": {
+        "x": "363.6666666666667",
+        "y": "15"
       }
     }
   ],

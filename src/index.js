@@ -1,19 +1,19 @@
 import StatefulComponent from "./state/statefulComponent";
 import {
   ACTIONS as actions,
-  reducers,
+  cloneData,
   DIVIDER,
   SPECIAL_DATA_KEYS,
-} from "./state/genmoReducers";
+} from "./utils/reducerUtils";
+import { reducers } from "./state/genmoReducers";
 import { linkFilter } from "./utils/conditionalFilters";
-import { replaceVariables, replaceShortCodes } from "./utils/textReplacements";
 import {
   InvalidLinkError,
   InvalidStoryError,
   LinkNotFoundError,
   PassageNotFoundError,
 } from "./utils/errors";
-import { ShortcodeReplacers } from "./utils/shortcodeReplacers";
+import { getDataHelpers, getPassageHelpers } from "./utils/handlebarsHelpers";
 import Handlebars from "handlebars";
 
 /**
@@ -61,7 +61,6 @@ import Handlebars from "handlebars";
  * @class
  * @property {Function} outputFunction
  * @property {Function} errorFunction
- * @property {ShortcodeReplacers} shortcodeReplacers
  * @extends {StatefulComponent}
  *
  * @description Creates a Genmo Object based on `storyData`, a JSON object created using the [Twison](https://github.com/lazerwalker/twison) format in [Twine](https://twinery.org/)
@@ -94,8 +93,6 @@ export class Genmo extends StatefulComponent {
       opts.errorFunction || (console && console.warn) || this.noop;
 
     this.followLink(storyData.startnode);
-
-    this.shortCodeReplacers = new ShortcodeReplacers(this, Handlebars);
   }
   /**
    * Calls the provided `outputFunction` during construction with the current passage.
@@ -107,7 +104,7 @@ export class Genmo extends StatefulComponent {
     return this.outputFunction(this.getCurrentPassage());
   }
   /**
-   * Returns current passage. This function also appends `passageText` (with data and shortcodes replaced), and filters links
+   * Returns current passage. This function also appends `passageText` (with data and helpers replaced), and filters links
    * @return {Passage}
    */
   getCurrentPassage() {
@@ -181,7 +178,7 @@ export class Genmo extends StatefulComponent {
     return targetPassage.text.split(DIVIDER);
   }
   /**
-   * Returns just the text of the passage, with variables replaced and shortcodes processed.
+   * Returns just the text of the passage, with variables replaced and helpers processed.
    * If `passage` is not specified, `currentPassage` is used instead.
    *
    * @param {Passage|null} passage
@@ -190,53 +187,11 @@ export class Genmo extends StatefulComponent {
   getPassageText(passage) {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
+    const text = Handlebars.create().compile(parts[0])(this.state.data, {
+      helpers: getPassageHelpers(this),
+    });
 
-    const text = Handlebars.compile(parts[0])(this.state.data);
-    const variablesReplaced = replaceVariables(text, this.state.data);
-    const shortCodesReplaced = replaceShortCodes(
-      variablesReplaced,
-      this.shortCodeReplacers.getReplacers()
-    );
-
-    return shortCodesReplaced;
-  }
-  /**
-   * Returns the data object associated with this passage, if it exists.
-   * If `passage` is not specified, `currentPassage` is used instead.
-   *
-   * @param {Passage|null} passage
-   * @return {String}
-   */
-  getPassageText(passage) {
-    const parts = this.splitPassage(passage);
-
-    const text = Handlebars.compile(parts[0])(this.state.data);
-    const variablesReplaced = replaceVariables(text, this.state.data);
-    const shortCodesReplaced = replaceShortCodes(
-      variablesReplaced,
-      this.shortCodeReplacers.getReplacers()
-    );
-
-    return shortCodesReplaced;
-  }
-  /**
-   * Returns the data object associated with this passage, if it exists.
-   * If `passage` is not specified, `currentPassage` is used instead.
-   *
-   * @param {Passage|null} passage
-   * @return {String}
-   */
-  getPassageText(passage) {
-    const parts = this.splitPassage(passage);
-
-    const text = Handlebars.compile(parts[0])(this.state.data);
-    const variablesReplaced = replaceVariables(text, this.state.data);
-    const shortCodesReplaced = replaceShortCodes(
-      variablesReplaced,
-      this.shortCodeReplacers.getReplacers()
-    );
-
-    return shortCodesReplaced;
+    return text;
   }
   /**
    * Returns the data object associated with this passage, if it exists.
@@ -249,7 +204,7 @@ export class Genmo extends StatefulComponent {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
 
-    const json = parts[parts.length - 1];
+    const json = parts.length === 3 ? parts[2] : null;
     let parsed = null;
     try {
       parsed = JSON.parse(json);
@@ -257,6 +212,17 @@ export class Genmo extends StatefulComponent {
       // That wasn't JSON we just parsed, oh well.
     }
 
+    // Also get data on the passage set by Mustache
+    const handleBarsData = {
+      ...(parsed || {}),
+    };
+    Handlebars.create().compile(parts[0])(this.state.data, {
+      helpers: getDataHelpers(handleBarsData, this.state.currentPassage),
+    });
+
+    if (Object.keys(handleBarsData).length) {
+      return handleBarsData;
+    }
     return parsed;
   }
   /**

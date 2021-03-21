@@ -153,6 +153,18 @@ describe("data update", () => {
     genmo.setData(myData);
     expect(genmo.getData()).toStrictEqual(expect.objectContaining(myData));
   });
+
+  test("able to set data via Mustache", () => {
+    genmo.followLink("11");
+    expect(genmo.getData()).toStrictEqual(
+      expect.objectContaining({
+        usingMustacheData: true,
+        aDuckSays: "quack",
+        howManyCows: 12,
+        isAFarm: false,
+      })
+    );
+  });
 });
 
 describe("conditional links", () => {
@@ -195,7 +207,7 @@ describe("variable interpolation", () => {
   });
 
   const expectedOutputWithData = "s is -2\nd is 5\nc is a string guvna";
-  const expectedOutputWithoutData = "s is #{s}\nd is #{d}\nc is #{c}";
+  const expectedOutputWithoutData = "s is \nd is \nc is ";
 
   test("data is output when set", () => {
     genmo.followLink("2");
@@ -400,6 +412,32 @@ describe("inventory", () => {
       })
     );
   });
+
+  test("add/remove via Mustache", () => {
+    genmo.followLink("11");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        laptop: 1,
+        coin: 0,
+      })
+    );
+    expect(genmo.getInventory()).not.toStrictEqual(
+      expect.objectContaining({
+        another_laptop: expect.anything(),
+      })
+    );
+    genmo.followLink("1");
+    genmo.followLink("2");
+    genmo.followLink("1");
+    genmo.followLink("11");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        laptop: 2,
+        coin: 0,
+        another_laptop: 1,
+      })
+    );
+  });
 });
 
 describe("shortcodes", () => {
@@ -448,6 +486,7 @@ describe("shortcodes", () => {
     expect(genmo.outputCurrentPassage()).toEqual(
       expect.stringContaining(coinOnly)
     );
+
     expect(genmo.outputCurrentPassage()).not.toEqual(
       expect.stringContaining(coinAndBook)
     );
@@ -465,60 +504,18 @@ describe("shortcodes", () => {
     );
   });
 
-  test("changed data", () => {
-    genmo.setData({
-      age: 16,
-      birthYear: 2004,
-      fruit: "orange",
-      complex: {
-        address: "16 Main St",
-        city: "Springfield",
-      },
-    });
-    genmo.setData({
-      age: 16,
-      birthYear: 2005,
-      fruit: "apple",
-      complex: {
-        address: "16 Main St",
-        city: "Springfield",
-      },
-    });
-    const passage = {
-      text: `
-        {{#changed keys="birthYear"}}Updated birth year{{/changed}}
-        {{#changed keys="age"}}Updated age!{{/changed}}
-        {{#changed keys="birthYear fruit"}}Changed birth year and fruit{{/changed}}
-        {{#changed keys="age fruit"}}Changed fruit and age{{/changed}}
-        {{#changed keys="complex"}}Changed complex{{/changed}}
-      `,
-      pid: "1",
-    };
-    const passageText = genmo.getPassageText(passage);
-    expect(passageText).toMatch("Updated birth year");
-    expect(passageText).not.toMatch("Updated age!");
-    expect(passageText).toMatch("Changed birth year and fruit");
-    expect(passageText).not.toMatch("Changed fruit and age");
-    expect(passageText).not.toMatch("Changed complex");
-  });
-  test.only("changed inventory", () => {
-    genmo.updateInventory({
-      egg: 1,
-      milk: 1,
-    });
-    genmo.updateInventory({
-      egg: 2,
-    });
-    const passage = {
-      text: `
-        {{#changed inventory="egg"}}Egg changed{{/changed}}
-        {{#changed inventory="milk"}}Milk changed{{/changed}}
-      `,
-      pid: "1",
-    };
-    const passageText = genmo.getPassageText(passage);
-    expect(passageText).toMatch("Egg changed");
-    expect(passageText).not.toMatch("Milk changed");
+  test("changed data and inventory", () => {
+    genmo.followLink("12");
+    const passageText = genmo.getPassageText();
+    expect(passageText).toMatch("Changed fruit");
+    expect(passageText).not.toMatch("Changed cheese");
+    expect(passageText).toMatch("Changed egg and milk");
+    expect(passageText).not.toMatch("Changed coin");
+
+    genmo.followLink("1");
+    genmo.followLink("12");
+    const updatedPassageText = genmo.getPassageText();
+    expect(updatedPassageText).not.toMatch("Changed fruit");
   });
 });
 
@@ -557,5 +554,13 @@ describe("transient/passage data", () => {
         passage_data: {},
       })
     );
+  });
+
+  test("Passage data set with mustache", () => {
+    genmo.followLink("11");
+    expect(genmo.getPassageData()).toStrictEqual({
+      spiderIsHere: true,
+      spiderCount: 8,
+    });
   });
 });

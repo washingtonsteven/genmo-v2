@@ -1,5 +1,5 @@
 /** @module */
-import { SPECIAL_DATA_KEYS } from "../state/genmoReducers";
+import { SPECIAL_DATA_KEYS } from "./reducerUtils";
 
 /** @type {RegExp}
  * @description The regex to parse binary/trinary conditions.
