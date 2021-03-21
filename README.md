@@ -15,7 +15,7 @@ Genmo is a text narrative engine that is meant to be pluggable into any sort of 
   - [Prompting for data](#prompting-for-data)
   - [Conditional Links](#conditional-links)
   - [Managing Player Inventory](#managing-player-inventory)
-  - [Shortcodes / Blocks](#shortcodes--blocks)
+  - [Helpers](#helpers)
     - [`inventory_has` and `inventory_not_has`](#inventory_has-and-inventory_not_has)
   - [Comments](#comments)
 - [Usage](#usage)
@@ -260,9 +260,9 @@ Naturally, there isn't a lot of information in this about _what_ the inventory i
 
 **Recommendataion Two, _Recommend Harder_:** Keep in mind that inventory items are usually only added or removed one at a time. While Genmo does offer the ability to add multiples of an item, consider whether you want to use the inventory system for this, or if you just want to use a standard data. For example, while "The Haunted Coin or Gorgnax" would be a good inventory item, "coins" used as currency (which the player can have tens, hundreds, or even thousands of), would be better used as a standard piece of data.
 
-#### Shortcodes / Blocks
+#### Helpers
 
-Some shortcodes are available to modify your text on the fly. Shortcodes are typically follow the following format:
+Some helpers are available to modify your text on the fly. Shortcodes are typically follow the following format:
 
 ```
 {{#shortcodeName arg="argument1"}Text content here to be modified by the shortcode{{/shortcodeName}}
