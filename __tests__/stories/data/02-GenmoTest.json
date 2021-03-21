@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? #{name}, #{age}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -85,7 +85,7 @@
       }
     },
     {
-      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is #{s}\nd is #{d}\nc is #{c}\n\n---\n\n[[Start]]\n[[Creme de la creme]] \n\n---\n{\n\"inventory_add\":[\"book\",\"toothpaste\"]\n}",
+      "text": "Awooo!\n\n\"No awoo. $300 fine.\"\n\nD:\n\ns is {{s}}\nd is {{d}}\nc is {{c}}\n\n---\n\n[[Start]]\n[[Creme de la creme]] \n\n---\n{\n\"inventory_add\":[\"book\",\"toothpaste\"]\n}",
       "links": [
         {
           "name": "Start",
@@ -102,11 +102,11 @@
       "pid": "3",
       "position": {
         "x": "110",
-        "y": "465"
+        "y": "463.3333333333333"
       }
     },
     {
-      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n#{inventory_has coin}\nYou have a coin\n#{/inventory_has}\n#{!inventory_has toothpaste}\nYou don't have toothpaste\n#{/!inventory_has}\n#{inventory_has coin book}\nYou have a coin and a book\n#{/inventory_has}\n   \n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
+      "text": "What will be be having for dessert\n\nCreme de la penis\n\nI'm sorry, what?\n\nCreme de la penis\n\nI don't think that's on our menu.\n\nBalls.\n\n{{#inventory_has items=\"coin\"}}\nYou have a coin\n{{/inventory_has}}\n{{#inventory_not_has items=\"toothpaste\"}}\nYou don't have toothpaste\n{{/inventory_not_has}}\n{{#inventory_has items=\"coin book\"}}\nYou have a coin and a book\n{{/inventory_has}}\n   \n\n---\n\n[[Start]]\n[[Effeminate abyss]] \n\n---\n\n{\n  \"name\":\">>\",\n  \"age\":\">>\"\n}",
       "links": [
         {
           "name": "Start",
@@ -180,8 +180,8 @@
       "name": "Staring at the truth til I'm blind",
       "pid": "7",
       "position": {
-        "x": "787",
-        "y": "350"
+        "x": "788.6666666666666",
+        "y": "351.6666666666667"
       }
     },
     {
@@ -201,7 +201,7 @@
       }
     },
     {
-      "text": "If you don't have a coin you get a membership card #{inventory_has coin}You have a coin, too bad#{/inventory_has}\n\nSome other text here.\n\n#{!inventory_has coin}You don't have a coin! Congrats, friend#{/inventory_has}\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
+      "text": "If you don't have a coin you get a membership card {{#inventory_has items=\"coin\"}}You have a coin, too bad{{/inventory_has}}\n\nSome other text here.\n\n{{#inventory_not_has items=\"coin\"}}You don't have a coin! Congrats, friend{{/inventory_not_has}}\n\n---\n\n[[Start]] \n[[I'm hearing voices]] \n\n---\n\n{\n\t\"inventory_add\": {\n\t\t\"condition\": \"!has coin\",\n\t\t\"name\": \"membership_card\"\n\t}\n}",
       "links": [
         {
           "name": "Start",
@@ -233,7 +233,7 @@
       "name": "Passage Data",
       "pid": "10",
       "position": {
-        "x": "940.3333333333334",
+        "x": "941.6666666666666",
         "y": "275"
       }
     }

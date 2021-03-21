@@ -6,14 +6,16 @@ import {
 } from "./utils/reducerUtils";
 import { reducers } from "./state/genmoReducers";
 import { linkFilter } from "./utils/conditionalFilters";
-import { replaceVariables, replaceShortCodes } from "./utils/textReplacements";
 import {
   InvalidLinkError,
   InvalidStoryError,
   LinkNotFoundError,
   PassageNotFoundError,
 } from "./utils/errors";
-import { ShortcodeReplacers } from "./utils/shortcodeReplacers";
+import {
+  getPassageHelpers,
+  ShortcodeReplacers,
+} from "./utils/handlebarsHelpers";
 import Handlebars from "handlebars";
 
 /**
@@ -95,7 +97,7 @@ export class Genmo extends StatefulComponent {
 
     this.followLink(storyData.startnode);
 
-    this.shortCodeReplacers = new ShortcodeReplacers(this, Handlebars);
+    // this.shortCodeReplacers = new ShortcodeReplacers(this, Handlebars);
   }
   /**
    * Calls the provided `outputFunction` during construction with the current passage.
@@ -191,52 +193,11 @@ export class Genmo extends StatefulComponent {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
 
-    const text = Handlebars.compile(parts[0])(this.state.data);
-    const variablesReplaced = replaceVariables(text, this.state.data);
-    const shortCodesReplaced = replaceShortCodes(
-      variablesReplaced,
-      this.shortCodeReplacers.getReplacers()
-    );
+    const text = Handlebars.create().compile(parts[0])(this.state.data, {
+      helpers: getPassageHelpers(this),
+    });
 
-    return shortCodesReplaced;
-  }
-  /**
-   * Returns the data object associated with this passage, if it exists.
-   * If `passage` is not specified, `currentPassage` is used instead.
-   *
-   * @param {Passage|null} passage
-   * @return {String}
-   */
-  getPassageText(passage) {
-    const parts = this.splitPassage(passage);
-
-    const text = Handlebars.compile(parts[0])(this.state.data);
-    const variablesReplaced = replaceVariables(text, this.state.data);
-    const shortCodesReplaced = replaceShortCodes(
-      variablesReplaced,
-      this.shortCodeReplacers.getReplacers()
-    );
-
-    return shortCodesReplaced;
-  }
-  /**
-   * Returns the data object associated with this passage, if it exists.
-   * If `passage` is not specified, `currentPassage` is used instead.
-   *
-   * @param {Passage|null} passage
-   * @return {String}
-   */
-  getPassageText(passage) {
-    const parts = this.splitPassage(passage);
-
-    const text = Handlebars.compile(parts[0])(this.state.data);
-    const variablesReplaced = replaceVariables(text, this.state.data);
-    const shortCodesReplaced = replaceShortCodes(
-      variablesReplaced,
-      this.shortCodeReplacers.getReplacers()
-    );
-
-    return shortCodesReplaced;
+    return text;
   }
   /**
    * Returns the data object associated with this passage, if it exists.
