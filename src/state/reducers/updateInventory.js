@@ -32,11 +32,10 @@ export const updateInventory = (data, items = null, delta) => {
     }
     items.forEach((item) => {
       if (typeof item === "object" && item.condition) {
-        const f = inventoryFilter;
         if (inventoryFilter(item, data)) {
           data[SPECIAL_DATA_KEYS.INVENTORY][item.name] = Math.max(
             0,
-            data[SPECIAL_DATA_KEYS.INVENTORY][item] + delta
+            (data[SPECIAL_DATA_KEYS.INVENTORY][item] || 0) + delta
           );
         }
       } else if (typeof item === "string") {

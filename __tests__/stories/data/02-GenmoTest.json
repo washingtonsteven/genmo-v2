@@ -243,7 +243,7 @@
       }
     },
     {
-      "text": "This part of the spider Handles setting data via mustache.\n\n{{#data usingMustacheData=\"true\" aDuckSays=\"quack\" howManyCows=12 isAFarm=false}}{{/data}}\n\n---\n\n[[Start]] ",
+      "text": "This part of the spider Handles setting data via mustache.\n\n{{#data_set usingMustacheData=\"true\" aDuckSays=\"quack\" howManyCows=12 isAFarm=false}}{{/data_set}}\n\n{{#inventory_add items=\"laptop\"}}{{/inventory_add}}\n{{#inventory_add condition=\"d gte 5\" items=\"another_laptop\"}}{{/inventory_add}}\n\n{{#inventory_remove items=\"coin\"}}{{/inventory_remove}}\n\n{{#passage_data_set spiderIsHere=\"true\" spiderCount=8}}{{/passage_data_set}}\n\n---\n\n[[Start]] ",
       "links": [
         {
           "name": "Start",

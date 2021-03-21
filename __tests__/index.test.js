@@ -412,6 +412,32 @@ describe("inventory", () => {
       })
     );
   });
+
+  test("add/remove via Mustache", () => {
+    genmo.followLink("11");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        laptop: 1,
+        coin: 0,
+      })
+    );
+    expect(genmo.getInventory()).not.toStrictEqual(
+      expect.objectContaining({
+        another_laptop: expect.anything(),
+      })
+    );
+    genmo.followLink("1");
+    genmo.followLink("2");
+    genmo.followLink("1");
+    genmo.followLink("11");
+    expect(genmo.getInventory()).toStrictEqual(
+      expect.objectContaining({
+        laptop: 2,
+        coin: 0,
+        another_laptop: 1,
+      })
+    );
+  });
 });
 
 describe("shortcodes", () => {
@@ -571,5 +597,13 @@ describe("transient/passage data", () => {
         passage_data: {},
       })
     );
+  });
+
+  test("Passage data set with mustache", () => {
+    genmo.followLink("11");
+    expect(genmo.getPassageData()).toStrictEqual({
+      spiderIsHere: true,
+      spiderCount: 8,
+    });
   });
 });

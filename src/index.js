@@ -1,6 +1,7 @@
 import StatefulComponent from "./state/statefulComponent";
 import {
   ACTIONS as actions,
+  cloneData,
   DIVIDER,
   SPECIAL_DATA_KEYS,
 } from "./utils/reducerUtils";
@@ -12,7 +13,7 @@ import {
   LinkNotFoundError,
   PassageNotFoundError,
 } from "./utils/errors";
-import { getPassageHelpers } from "./utils/handlebarsHelpers";
+import { getDataHelpers, getPassageHelpers } from "./utils/handlebarsHelpers";
 import Handlebars from "handlebars";
 
 /**
@@ -186,7 +187,6 @@ export class Genmo extends StatefulComponent {
   getPassageText(passage) {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
-
     const text = Handlebars.create().compile(parts[0])(this.state.data, {
       helpers: getPassageHelpers(this),
     });
@@ -204,7 +204,7 @@ export class Genmo extends StatefulComponent {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
 
-    const json = parts[parts.length - 1];
+    const json = parts.length === 3 ? parts[2] : null;
     let parsed = null;
     try {
       parsed = JSON.parse(json);
@@ -212,6 +212,17 @@ export class Genmo extends StatefulComponent {
       // That wasn't JSON we just parsed, oh well.
     }
 
+    // Also get data on the passage set by Mustache
+    const handleBarsData = {
+      ...(parsed || {}),
+    };
+    Handlebars.create().compile(parts[0])(this.state.data, {
+      helpers: getDataHelpers(handleBarsData, this.state.currentPassage),
+    });
+
+    if (Object.keys(handleBarsData).length) {
+      return handleBarsData;
+    }
     return parsed;
   }
   /**
