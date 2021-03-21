@@ -1,10 +1,10 @@
 import StatefulComponent from "./state/statefulComponent";
 import {
   ACTIONS as actions,
-  reducers,
   DIVIDER,
   SPECIAL_DATA_KEYS,
-} from "./state/genmoReducers";
+} from "./utils/reducerUtils";
+import { reducers } from "./state/genmoReducers";
 import { linkFilter } from "./utils/conditionalFilters";
 import { replaceVariables, replaceShortCodes } from "./utils/textReplacements";
 import {
