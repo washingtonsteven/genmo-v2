@@ -377,6 +377,12 @@ I giveth a bike and a shirt and taketh away a Playstation.
 {{#inventory_remove items="playstation"}}{{/inventory_remove}}
 ```
 
+You can also specify a condition under which the inventory change will be made, similar to [Conditional Links](#conditional-links):
+
+```
+{{#inventory_add items="alcohol cigarettes" condition="age gte 18"}}{{/inventory_add}}
+```
+
 #### Comments
 
 You can insert comments into your Twine story (in you need to notate some particularly complex story decision) using standard [Handlebars comments](https://handlebarsjs.com/examples/comments.html).

@@ -486,7 +486,7 @@ describe("shortcodes", () => {
     expect(genmo.outputCurrentPassage()).toEqual(
       expect.stringContaining(coinOnly)
     );
-    1;
+
     expect(genmo.outputCurrentPassage()).not.toEqual(
       expect.stringContaining(coinAndBook)
     );
