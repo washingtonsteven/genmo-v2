@@ -64,5 +64,48 @@ describe("StatefulComponent", () => {
     expect(component.state).toStrictEqual(expect.objectContaining(newState));
     expect(component.actions.length).toEqual(1);
     expect(component.previousStates.length).toEqual(1);
+    expect(component.snapshots.length).toEqual(1);
+    expect(component.snapshots[0]).toStrictEqual(
+      expect.objectContaining({
+        beforeState: {
+          ...initialState,
+        },
+        afterState: {
+          ...initialState,
+          ...newState,
+        },
+        action,
+      })
+    );
+  });
+
+  test("getMostRecentSnapshotWithActionType", () => {
+    const action1 = { type: "TEST_ACTION_1" };
+    const action2 = { type: "TEST_ACTION_2" };
+    reducers.push(
+      jest.fn().mockImplementation((state, action) => {
+        return {
+          ...state,
+          c: action.type === action1.type ? state.c + 1 : state.c * 2,
+        };
+      })
+    );
+
+    const component = new StatefulComponent(initialState, reducers);
+
+    component.doAction(action1); // 4
+    component.doAction(action2); // 8
+    component.doAction(action1); // 9
+    component.doAction(action1); // 10
+    component.doAction(action1); // 11
+
+    const snapshot = component.getMostRecentSnapshotWithActionType(
+      action2.type
+    );
+
+    expect(snapshot).not.toBeNull();
+    expect(snapshot.beforeState.c).toEqual(4);
+    expect(snapshot.afterState.c).toEqual(8);
+    expect(component.state.c).toEqual(11);
   });
 });

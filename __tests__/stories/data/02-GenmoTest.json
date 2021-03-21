@@ -3,7 +3,7 @@
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n[[Mustache data setting]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n[[Mustache data setting]]\n[[Changed Helper]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -54,6 +54,11 @@
           "name": "Mustache data setting",
           "link": "Mustache data setting",
           "pid": "11"
+        },
+        {
+          "name": "Changed Helper",
+          "link": "Changed Helper",
+          "pid": "12"
         }
       ],
       "name": "Start",
@@ -256,6 +261,22 @@
       "position": {
         "x": "587",
         "y": "30"
+      }
+    },
+    {
+      "text": "This is to check the changed helper.\n\n{{#data_set fruit=\"orange\"}}{{/data_set}}\n{{#inventory_add items=\"egg milk\"}}{{/inventory_add}}\n\n{{#changed keys=\"fruit\"}}Changed fruit{{/changed}}\n{{#changed keys=\"cheese\"}}Changed cheese{{/changed}}\n\n{{#changed inventory=\"egg milk\"}}Changed egg and milk{{/changed}}\n{{#changed inventory=\"coin\"}}Changed coin{{/changed}}\n\n---\n\n[[Start]]",
+      "links": [
+        {
+          "name": "Start",
+          "link": "Start",
+          "pid": "1"
+        }
+      ],
+      "name": "Changed Helper",
+      "pid": "12",
+      "position": {
+        "x": "363.6666666666667",
+        "y": "15"
       }
     }
   ],

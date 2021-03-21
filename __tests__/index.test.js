@@ -560,6 +560,19 @@ describe("shortcodes", () => {
     expect(passageText).toMatch("Egg changed");
     expect(passageText).not.toMatch("Milk changed");
   });
+  test("changed data and inventory", () => {
+    genmo.followLink("12");
+    const passageText = genmo.getPassageText();
+    expect(passageText).toMatch("Changed fruit");
+    expect(passageText).not.toMatch("Changed cheese");
+    expect(passageText).toMatch("Changed egg and milk");
+    expect(passageText).not.toMatch("Changed coin");
+
+    genmo.followLink("1");
+    genmo.followLink("12");
+    const updatedPassageText = genmo.getPassageText();
+    expect(updatedPassageText).not.toMatch("Changed fruit");
+  });
 });
 
 describe("transient/passage data", () => {

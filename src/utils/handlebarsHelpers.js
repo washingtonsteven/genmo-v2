@@ -1,5 +1,8 @@
 import { updateData } from "../state/reducers/followLink";
 import { updateInventory } from "../state/reducers/updateInventory";
+import { ACTIONS, SPECIAL_DATA_KEYS } from "./reducerUtils";
+
+const ARG_SPLIT_REGEX = /\s+/;
 
 /**
  * Returns `context.fn(options.genmo.getData())` if we have all the items in `context.hash.items`
@@ -15,7 +18,7 @@ const inventoryHasHelper = (handlebarsOptions, options) => {
     return "";
   }
 
-  const items = handlebarsOptions.hash["items"].split(/\s+/);
+  const items = handlebarsOptions.hash["items"].split(ARG_SPLIT_REGEX);
 
   if (options.inverse) {
     let hasNoItems = true;
@@ -35,6 +38,52 @@ const inventoryHasHelper = (handlebarsOptions, options) => {
       }
     });
     if (hasAllItems) {
+      return handlebarsOptions.fn(options.genmo.getData());
+    }
+  }
+
+  return "";
+};
+
+const changedHelper = (handlebarsOptions, options) => {
+  if (!options.genmo) {
+    return "";
+  }
+
+  let keys = handlebarsOptions.hash["keys"];
+  if (!keys) {
+    keys = handlebarsOptions.hash["inventory"];
+    options.inventory = true;
+  }
+  if (!keys) {
+    return "";
+  }
+  keys = keys.split(ARG_SPLIT_REGEX);
+  const snapshot = options.genmo.getMostRecentSnapshotWithActionType(
+    ACTIONS.FOLLOW_LINK.type
+  );
+
+  if (snapshot) {
+    let success = true;
+    keys.forEach((key) => {
+      let beforeData = snapshot.beforeState.data;
+      let afterData = snapshot.afterState.data;
+      if (options.inventory) {
+        beforeData = snapshot.beforeState.data[SPECIAL_DATA_KEYS.INVENTORY];
+        afterData = snapshot.afterState.data[SPECIAL_DATA_KEYS.INVENTORY];
+      }
+      if (options.inverse) {
+        if (beforeData[key] !== afterData[key]) {
+          success = false;
+        }
+      } else {
+        if (beforeData[key] === afterData[key]) {
+          success = false;
+        }
+      }
+    });
+
+    if (success) {
       return handlebarsOptions.fn(options.genmo.getData());
     }
   }
@@ -93,7 +142,7 @@ const updateInventoryHelper = (handlebarsOptions, options) => {
 
   const delta = options.operation === "remove" ? -1 : 1;
 
-  const itemsList = handlebarsOptions.hash["items"].split(/\s+/);
+  const itemsList = handlebarsOptions.hash["items"].split(ARG_SPLIT_REGEX);
   const condition = handlebarsOptions.hash["condition"];
   const items = [];
   itemsList.forEach((item) => {
@@ -124,6 +173,7 @@ export const getPassageHelpers = (genmo) => {
       inventoryHasHelper(handlebarsOptions, { genmo }),
     inventory_not_has: (handlebarsOptions) =>
       inventoryHasHelper(handlebarsOptions, { genmo, inverse: true }),
+    changed: (handlebarsOptions) => changedHelper(handlebarsOptions, { genmo }),
   };
 };
 

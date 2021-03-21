@@ -1,9 +1,17 @@
 /**
+ * @typedef Snapshot
+ * @property {Object} beforeState
+ * @property {Object} afterState
+ * @property {Object} action
+ */
+
+/**
  * @class
  * @property {Object} state
  * @property {Function[]} reducers
  * @property {Object[]} actions
  * @property {Object[]} previousStates
+ * @property {Snapshot[]} snapshots
  */
 class StatefulComponent {
   constructor(initialState = {}, reducers) {
@@ -11,6 +19,7 @@ class StatefulComponent {
     this.reducers = [];
     this.actions = [];
     this.previousStates = [];
+    this.snapshots = [];
     this.addReducer(reducers);
   }
   /**
@@ -66,6 +75,11 @@ class StatefulComponent {
     this.setState(updatedState);
     this.actions.push({ ...action });
     this.previousStates.push(previousState);
+    this.snapshots.push({
+      beforeState: previousState,
+      afterState: this.state,
+      action,
+    });
 
     this.doCallback(callback, ...callbackArgs);
   }
@@ -87,6 +101,15 @@ class StatefulComponent {
   getPreviousState() {
     if (!this.previousStates.length) return null;
     return this.previousStates[this.previousStates.length - 1];
+  }
+  getMostRecentSnapshotWithActionType(actionType) {
+    for (let i = this.snapshots.length - 1; i >= 0; i--) {
+      if (this.snapshots[i].action.type === actionType) {
+        return this.snapshots[i];
+      }
+    }
+
+    return null;
   }
 }
 
