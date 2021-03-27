@@ -1,9 +1,7 @@
-
-
 {
   "passages": [
     {
-      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n[[Mustache data setting]]\n[[Changed Helper]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
+      "text": "This is the beginning of the song\n\nYour name? {{name}}, {{age}}\n\n---\n\n[[I'm hearing voices]]\n[[Animal noises]]\n[[Creme de la creme]]\n[[Effeminate abyss]]\n[[And I'm reaching my threshold]]\n[[Staring at the truth til I'm blind||d gte 3->Staring at the truth til I'm blind]]\n[[Invalid Data Key setting]] \n[[Conditional !has coin]]\n[[Passage Data]]\n[[Mustache data setting]]\n[[Changed Helper]]\n[[No Links]]\n\n---\n\n{\n\"inventory_add\":\"coin\"\n}",
       "links": [
         {
           "name": "I'm hearing voices",
@@ -59,6 +57,11 @@
           "name": "Changed Helper",
           "link": "Changed Helper",
           "pid": "12"
+        },
+        {
+          "name": "No Links",
+          "link": "No Links",
+          "pid": "13"
         }
       ],
       "name": "Start",
@@ -90,7 +93,7 @@
       "name": "I'm hearing voices",
       "pid": "2",
       "position": {
-        "x": "37",
+        "x": "35",
         "y": "350"
       }
     },
@@ -112,7 +115,7 @@
       "pid": "3",
       "position": {
         "x": "110",
-        "y": "463.3333333333333"
+        "y": "463"
       }
     },
     {
@@ -190,8 +193,8 @@
       "name": "Staring at the truth til I'm blind",
       "pid": "7",
       "position": {
-        "x": "788.6666666666666",
-        "y": "351.6666666666667"
+        "x": "788",
+        "y": "351"
       }
     },
     {
@@ -243,7 +246,7 @@
       "name": "Passage Data",
       "pid": "10",
       "position": {
-        "x": "941.6666666666666",
+        "x": "941",
         "y": "275"
       }
     },
@@ -275,15 +278,23 @@
       "name": "Changed Helper",
       "pid": "12",
       "position": {
-        "x": "363.6666666666667",
+        "x": "363",
         "y": "15"
+      }
+    },
+    {
+      "text": "This page has no links coming off of it, not even a link back.",
+      "name": "No Links",
+      "pid": "13",
+      "position": {
+        "x": "1003.6666666666667",
+        "y": "6.666666666666629"
       }
     }
   ],
   "name": "GenmoTest",
   "startnode": "1",
   "creator": "Twine",
-  "creator-version": "2.3.8",
+  "creator-version": "2.2.1",
   "ifid": "2DEC574C-F71F-4A11-A57D-869A5C1C938F"
 }
-

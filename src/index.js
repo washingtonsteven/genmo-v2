@@ -132,7 +132,7 @@ export class Genmo extends StatefulComponent {
 
     passage.passageText = this.getPassageText(passage);
 
-    passage.links = passage.links
+    passage.links = (passage.links || [])
       .map((link) => linkFilter(link, this.state.data))
       .filter((l) => l);
 
@@ -292,7 +292,7 @@ export class Genmo extends StatefulComponent {
 
     const activeLink =
       storyIsStarting ||
-      this.state.currentPassage.links.find((l) => l.pid === pid);
+      (this.state.currentPassage.links || []).find((l) => l.pid === pid);
 
     if (!activeLink) {
       return this.errorFunction(

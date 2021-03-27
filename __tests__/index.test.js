@@ -82,6 +82,13 @@ describe("basic navigation", () => {
       expect.any(LinkNotFoundError)
     );
   });
+
+  test("Able to go to a passage without links", () => {
+    expect(() => {
+      genmo.followLink("13");
+      genmo.outputCurrentPassage();
+    }).not.toThrow();
+  });
 });
 
 describe("data update", () => {
