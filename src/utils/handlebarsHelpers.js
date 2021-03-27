@@ -167,13 +167,14 @@ const updateInventoryHelper = (handlebarsOptions, options) => {
  * @param {Genmo} genmo The genmo object
  * @returns {Object}
  */
-export const getPassageHelpers = (genmo) => {
+export const getPassageHelpers = (genmo, otherHelpers = {}) => {
   return {
     inventory_has: (handlebarsOptions) =>
       inventoryHasHelper(handlebarsOptions, { genmo }),
     inventory_not_has: (handlebarsOptions) =>
       inventoryHasHelper(handlebarsOptions, { genmo, inverse: true }),
     changed: (handlebarsOptions) => changedHelper(handlebarsOptions, { genmo }),
+    ...otherHelpers,
   };
 };
 

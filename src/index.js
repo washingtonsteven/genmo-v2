@@ -92,6 +92,13 @@ export class Genmo extends StatefulComponent {
     this.errorFunction =
       opts.errorFunction || (console && console.warn) || this.noop;
 
+    this.customHelpers = {};
+    if (opts.customHelpers) {
+      Object.entries(opts.customHelpers).forEach(([helperName, helperFn]) => {
+        this.addHelper(helperName, helperFn);
+      });
+    }
+
     this.followLink(storyData.startnode);
   }
   /**
@@ -188,7 +195,7 @@ export class Genmo extends StatefulComponent {
     const parts = this.splitPassage(passage);
     if (!parts) return null;
     const text = Handlebars.create().compile(parts[0])(this.state.data, {
-      helpers: getPassageHelpers(this),
+      helpers: getPassageHelpers(this, this.customHelpers),
     });
 
     return text;
@@ -407,6 +414,38 @@ export class Genmo extends StatefulComponent {
     this.updateInventory({
       [item]: -1,
     });
+  }
+  /**
+   * Returns a function that wraps the helper function, forwarding Handlebars'
+   * `options` object (as `handlebarsOptions`) and passing a second argument,
+   * an object containing `genmo` which refers to this instance.
+   *
+   * @param {Function} helperFn
+   * @returns Function
+   */
+  helperWrapper(helperFn) {
+    return (handlebarsOptions) => helperFn(handlebarsOptions, { genmo: this });
+  }
+  /**
+   * Adds a Handlebars helper with the name `helperName`.
+   * If a helper already existed at `helperName`, it is overwritten.
+   *
+   * @param {String} helperName
+   * @param {Function} helperFn
+   */
+  addHelper(helperName, helperFn) {
+    this.customHelpers[helperName] = this.helperWrapper(helperFn);
+  }
+  /**
+   * Removes a Handlebars helpers with the name `helperName`,
+   * if it exists.
+   *
+   * @param {String} helperName
+   */
+  removeHelper(helperName) {
+    if (this.customHelpers[helperName]) {
+      delete this.customHelpers[helperName];
+    }
   }
   /**
    * Handles the error passed in. Default is to call `errorFunction`

@@ -447,7 +447,7 @@ describe("inventory", () => {
   });
 });
 
-describe("shortcodes", () => {
+describe("shortcodes/helpers", () => {
   let genmo;
   beforeEach(() => {
     genmo = new Genmo(GenmoTest, {
@@ -523,6 +523,43 @@ describe("shortcodes", () => {
     genmo.followLink("12");
     const updatedPassageText = genmo.getPassageText();
     expect(updatedPassageText).not.toMatch("Changed fruit");
+  });
+
+  test("Custom helpers", () => {
+    const helpers = {
+      bold: (handlebarsOptions, { genmo }) => {
+        return `<strong>${handlebarsOptions.fn(genmo.getData())}</strong>`;
+      },
+    };
+    const italicHelper = (handlebarsOptions, { genmo }) =>
+      `<em>${handlebarsOptions.fn(genmo.getData())}</em>`;
+    genmo = new Genmo(GenmoTest, {
+      outputFunction: (passage) => passage.passageText,
+      errorFunction: returnError,
+      customHelpers: helpers,
+    });
+    const passage = {
+      text:
+        "{{#bold}}This text is bold{{/bold}}\n{{#italic}}This Text is not italic{{/italic}}",
+      pid: "1",
+    };
+
+    const passageText = genmo.getPassageText(passage);
+    expect(passageText).toMatch(`<strong>This text is bold</strong>`);
+    expect(passageText).not.toMatch(`This Text is not italic`);
+
+    genmo.addHelper("italic", italicHelper);
+    const passageTextWithItalics = genmo.getPassageText(passage);
+    expect(passageTextWithItalics).toMatch(
+      `<strong>This text is bold</strong>`
+    );
+    expect(passageTextWithItalics).toMatch(`<em>This Text is not italic</em>`);
+
+    genmo.removeHelper("italic");
+    const passageTextWithoutItalics = genmo.getPassageText(passage);
+    expect(passageTextWithoutItalics).not.toMatch(
+      `<em>This Text is not italic</em>`
+    );
   });
 });
 
