@@ -5,3 +5,4 @@ bundle
 .cache
 .vscode
 docs
+yarn-error.log

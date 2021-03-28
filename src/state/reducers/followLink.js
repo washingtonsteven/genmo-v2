@@ -60,6 +60,7 @@ export const updateData = (newData, { data, currentPassage }) => {
         );
 
         if (keyIndex < 0) currentPassage.needsPrompt.push({ key });
+        else currentPassage.needsPrompt[keyIndex].complete = false;
       }
 
       return;
