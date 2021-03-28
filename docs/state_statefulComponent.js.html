@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: state/statefulComponent.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: state/statefulComponent.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @typedef Snapshot
+ * @property {Object} beforeState
+ * @property {Object} afterState
+ * @property {Object} action
+ */
+
+/**
+ * @class
+ * @property {Object} state
+ * @property {Function[]} reducers
+ * @property {Object[]} actions
+ * @property {Object[]} previousStates
+ * @property {Snapshot[]} snapshots
+ */
+class StatefulComponent {
+  constructor(initialState = {}, reducers) {
+    this.state = { ...initialState };
+    this.reducers = [];
+    this.actions = [];
+    this.previousStates = [];
+    this.snapshots = [];
+    this.addReducer(reducers);
+  }
+  /**
+   * Adds a reducer which will be called whenever an action is dispatched
+   * @param {Function} fn
+   */
+  addReducer(fn) {
+    if (!Array.isArray(fn)) fn = [fn];
+
+    this.reducers = this.reducers
+      .concat(fn)
+      .filter((f) => typeof f === "function");
+  }
+  /**
+   * Merges `newState` into `state`, then calls `callback` if provided.
+   * @param {Object} newState
+   * @param {Function} [callback]
+   */
+  setState(newState, callback) {
+    if (typeof newState === "function") {
+      newState = newState(this.state);
+    }
+    this.state = {
+      ...this.state,
+      ...newState,
+    };
+
+    this.doCallback(callback);
+  }
+  /**
+   * Applies an action to the state, via the currently registered reducers.
+   * If a reducer throws an error, it is caught and sent to `onError`
+   *
+   * Once all reducers have been called, the action is pushed onto `actions` (to allow inspecting previous actions).
+   *
+   * After everything, the callback is called, if provided
+   *
+   * @param {Object} action
+   * @param {Function} [callback]
+   * @param  {...any} [callbackArgs]
+   */
+  doAction(action, callback, ...callbackArgs) {
+    const previousState = { ...this.state };
+    let updatedState = { ...this.state };
+    for (let i = 0; i &lt; this.reducers.length; i++) {
+      try {
+        updatedState = this.reducers[i](updatedState, action) || updatedState;
+      } catch (err) {
+        this.onError(err);
+        break;
+      }
+    }
+    this.setState(updatedState);
+    this.actions.push({ ...action });
+    this.previousStates.push(previousState);
+    this.snapshots.push({
+      beforeState: previousState,
+      afterState: this.state,
+      action,
+    });
+
+    this.doCallback(callback, ...callbackArgs);
+  }
+  doCallback(callback, ...args) {
+    if (typeof callback === "function") callback(...args);
+  }
+  /**
+   * Handles an error that came from a reducer. Default behavior is to throw the error, however
+   * this can be overridden to allow other error handling.
+   * @param {Error} err
+   */
+  onError(err) {
+    throw err;
+  }
+  /**
+   * Returns the update previous to the current one. If there was no previous state (e.g. there were no updates yet), returns null.
+   * @returns {Object|null}
+   */
+  getPreviousState() {
+    if (!this.previousStates.length) return null;
+    return this.previousStates[this.previousStates.length - 1];
+  }
+  getMostRecentSnapshotWithActionType(actionType) {
+    for (let i = this.snapshots.length - 1; i >= 0; i--) {
+      if (this.snapshots[i].action.type === actionType) {
+        return this.snapshots[i];
+      }
+    }
+
+    return null;
+  }
+}
+
+export default StatefulComponent;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-utils_conditionalFilters.html">utils/conditionalFilters</a></li><li><a href="module-utils_reducerUtils.html">utils/reducerUtils</a></li></ul><h3>Classes</h3><ul><li><a href="Genmo.html">Genmo</a></li><li><a href="GenmoError.html">GenmoError</a></li><li><a href="InvalidDataKeyError.html">InvalidDataKeyError</a></li><li><a href="InvalidLinkError.html">InvalidLinkError</a></li><li><a href="InvalidPassageDataError.html">InvalidPassageDataError</a></li><li><a href="InvalidStoryError.html">InvalidStoryError</a></li><li><a href="LinkNotFoundError.html">LinkNotFoundError</a></li><li><a href="NoStartingNodeError.html">NoStartingNodeError</a></li><li><a href="PassageNotFoundError.html">PassageNotFoundError</a></li><li><a href="StatefulComponent.html">StatefulComponent</a></li></ul><h3>Global</h3><ul><li><a href="global.html#followLinkReducer">followLinkReducer</a></li><li><a href="global.html#getDataHelpers">getDataHelpers</a></li><li><a href="global.html#getPassageHelpers">getPassageHelpers</a></li><li><a href="global.html#inventoryHasHelper">inventoryHasHelper</a></li><li><a href="global.html#promptAnswerReducer">promptAnswerReducer</a></li><li><a href="global.html#setDataHelper">setDataHelper</a></li><li><a href="global.html#setDataReducer">setDataReducer</a></li><li><a href="global.html#updateData">updateData</a></li><li><a href="global.html#updateInventory">updateInventory</a></li><li><a href="global.html#updateInventoryReducer">updateInventoryReducer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Mar 28 2021 00:36:09 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

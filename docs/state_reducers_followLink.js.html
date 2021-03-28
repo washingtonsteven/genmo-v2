@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: state/reducers/followLink.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: state/reducers/followLink.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  ACTIONS,
+  cloneData,
+  invalidKey,
+  DIVIDER,
+  SPECIAL_DATA_KEYS,
+} from "../../utils/reducerUtils";
+import {
+  InvalidDataKeyError,
+  InvalidPassageDataError,
+} from "../../utils/errors";
+import { updateInventory } from "./updateInventory";
+import { getDataHelpers } from "../../utils/handlebarsHelpers";
+import Handlebars from "handlebars";
+
+/**
+ * Updates `data` in place with info from `newData`
+ *
+ * @param {Object} data
+ * @param {Object} newData
+ * @returns {Object} data, but updated with newData
+ */
+export const updateData = (newData, { data, currentPassage }) => {
+  if (!newData) {
+    return data;
+  }
+
+  Object.entries(newData).forEach(([key, value]) => {
+    if (invalidKey(key)) {
+      throw new InvalidDataKeyError({
+        currentPassage,
+        key,
+      });
+    }
+
+    if (value === "null") {
+      data[key] = null;
+    }
+
+    const numericMatch =
+      typeof value === "string" &amp;&amp; value.match(/^(--|\+\+)(\d+)/);
+    if (numericMatch) {
+      if (!data[key]) {
+        data[key] = 0;
+      }
+      const operation = numericMatch[1] === "--" ? -1 : 1;
+      const abs_delta = +numericMatch[2];
+      const delta = abs_delta * operation;
+
+      data[key] += delta;
+
+      return;
+    }
+
+    if (value === ">>") {
+      if (!data[key]) {
+        if (!currentPassage.needsPrompt) currentPassage.needsPrompt = [];
+        const keyIndex = currentPassage.needsPrompt.findIndex(
+          (p) => p.key === key
+        );
+
+        if (keyIndex &lt; 0) currentPassage.needsPrompt.push({ key });
+        else currentPassage.needsPrompt[keyIndex].complete = false;
+      }
+
+      return;
+    }
+
+    if (key === SPECIAL_DATA_KEYS.INVENTORY_ADD) {
+      updateInventory(data, value, 1);
+      return;
+    }
+
+    if (key === SPECIAL_DATA_KEYS.INVENTORY_REMOVE) {
+      updateInventory(data, value, -1);
+      return;
+    }
+
+    data[key] = value;
+  });
+
+  // Reset passage data if we didn't already set it above
+  if (
+    !newData ||
+    !Object.keys(newData).find((k) => k === SPECIAL_DATA_KEYS.PASSAGE_DATA)
+  ) {
+    data[SPECIAL_DATA_KEYS.PASSAGE_DATA] = {};
+  }
+
+  return data;
+};
+
+/**
+ * Updates the state to point currentPassage to action.link (if action.type === ACTIONS.FOLLOW_LINK.type)
+ * This will also check if the link is valid, apply any data to the state from the new passage, and request prompts for the passage as indicated.
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @return {Object}
+ * @throws {InvalidPassageDataError}
+ * @throws {InvalidDataKeyError}
+ */
+export function followLinkReducer(state, action) {
+  if (action.type !== ACTIONS.FOLLOW_LINK.type) {
+    return {
+      ...state,
+    };
+  }
+
+  const currentPassage = action.nextPassage;
+  const data = cloneData(state.data);
+  const parts = action.nextPassage.text.split(DIVIDER);
+  const newDataJSON = (() => {
+    return parts[parts.length - 1];
+  })();
+  let newData;
+
+  try {
+    newData = JSON.parse(newDataJSON);
+  } catch (e) {
+    if (action.nextPassage.text.split(DIVIDER).length >= 3) {
+      throw new InvalidPassageDataError({
+        currentPassage,
+      });
+    }
+  }
+
+  updateData(newData, { data, currentPassage });
+
+  Handlebars.create().compile(parts[0])(data, {
+    helpers: getDataHelpers(data, currentPassage),
+  });
+
+  return {
+    ...state,
+    currentPassage,
+    data,
+  };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-utils_conditionalFilters.html">utils/conditionalFilters</a></li><li><a href="module-utils_reducerUtils.html">utils/reducerUtils</a></li></ul><h3>Classes</h3><ul><li><a href="Genmo.html">Genmo</a></li><li><a href="GenmoError.html">GenmoError</a></li><li><a href="InvalidDataKeyError.html">InvalidDataKeyError</a></li><li><a href="InvalidLinkError.html">InvalidLinkError</a></li><li><a href="InvalidPassageDataError.html">InvalidPassageDataError</a></li><li><a href="InvalidStoryError.html">InvalidStoryError</a></li><li><a href="LinkNotFoundError.html">LinkNotFoundError</a></li><li><a href="NoStartingNodeError.html">NoStartingNodeError</a></li><li><a href="PassageNotFoundError.html">PassageNotFoundError</a></li><li><a href="StatefulComponent.html">StatefulComponent</a></li></ul><h3>Global</h3><ul><li><a href="global.html#followLinkReducer">followLinkReducer</a></li><li><a href="global.html#getDataHelpers">getDataHelpers</a></li><li><a href="global.html#getPassageHelpers">getPassageHelpers</a></li><li><a href="global.html#inventoryHasHelper">inventoryHasHelper</a></li><li><a href="global.html#promptAnswerReducer">promptAnswerReducer</a></li><li><a href="global.html#setDataHelper">setDataHelper</a></li><li><a href="global.html#setDataReducer">setDataReducer</a></li><li><a href="global.html#updateData">updateData</a></li><li><a href="global.html#updateInventory">updateInventory</a></li><li><a href="global.html#updateInventoryReducer">updateInventoryReducer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Mar 28 2021 00:36:09 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

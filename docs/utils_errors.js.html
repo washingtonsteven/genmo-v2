@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/errors.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/errors.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @class
+ * Generic Genmo Error
+ * @property {String} message
+ * @property {Object} errorInfo
+ * @property {Number} code
+ */
+export class GenmoError extends Error {
+  constructor(message, errorInfo, code = -1) {
+    super(message);
+    this.errorInfo = errorInfo;
+    this.code = code;
+  }
+  /**
+   * Converts this error into a plan Object, with all its fields intact.
+   * @return {Object}
+   */
+  toObject() {
+    return Object.getOwnPropertyNames(this).reduce((obj, key) => {
+      obj[key] = this[key];
+      return obj;
+    }, {});
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class InvalidLinkError extends GenmoError {
+  constructor(errorInfo) {
+    const errorInfoStr = errorInfo.link
+      ? `Supplied link: ${
+          typeof errorInfo.link === "object"
+            ? errorInfo.link.pid
+            : errorInfo.link
+        }`
+      : `no link provided`;
+    super(
+      `Link supplied to followLink was invalid: ${errorInfoStr}`,
+      errorInfo,
+      1
+    );
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class LinkNotFoundError extends GenmoError {
+  constructor(errorInfo) {
+    const errorInfoStr = errorInfo.link
+      ? `Attempted link: ${
+          typeof errorInfo.link === "object"
+            ? errorInfo.link.pid
+            : errorInfo.link
+        }`
+      : "no link provided";
+    super(
+      `Tried to activate a link, but it wasn't present on the currentPassage: ${errorInfoStr}`,
+      errorInfo,
+      2
+    );
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class PassageNotFoundError extends GenmoError {
+  constructor(errorInfo) {
+    const errorInfoStr = Object.hasOwnProperty.call(errorInfo, "pid")
+      ? `Tried to find ${errorInfo.pid}`
+      : `no passage specified`;
+    super(`Could not find passage: ${errorInfoStr}`, errorInfo, 3);
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class NoStartingNodeError extends GenmoError {
+  constructor(errorInfo) {
+    super("There is no attribute on your story JSON `startnode`", errorInfo, 4);
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class InvalidDataKeyError extends GenmoError {
+  constructor(errorInfo) {
+    const keyStr = errorInfo.key || "no key specified";
+    const errorInfoStr =
+      errorInfo.currentPassage &amp;&amp; typeof errorInfo.currentPassage === "object"
+        ? `(pid ${errorInfo.currentPassage.pid} - ${errorInfo.currentPassage.name})`
+        : "(no current passage specified)";
+    super(
+      `Attempted access of a protected data key: \`${keyStr}\` ${errorInfoStr}`,
+      errorInfo,
+      5
+    );
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class InvalidPassageDataError extends GenmoError {
+  constructor(errorInfo) {
+    const errorInfoStr =
+      errorInfo.currentPassage &amp;&amp; typeof errorInfo.currentPassage === "object"
+        ? `Couldn't properly parse data for '${errorInfo.currentPassage.name}' (${errorInfo.currentPassage.pid})`
+        : "no current passage specified";
+
+    super(errorInfoStr, errorInfo, 6);
+  }
+}
+
+/**
+ * @class
+ * @extends {GenmoError}
+ */
+export class InvalidStoryError extends GenmoError {
+  constructor(errorInfo) {
+    const errorInfoStr = "Unable to generate story with storyData provided.";
+    super(errorInfoStr, errorInfo, 7);
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-utils_conditionalFilters.html">utils/conditionalFilters</a></li><li><a href="module-utils_reducerUtils.html">utils/reducerUtils</a></li></ul><h3>Classes</h3><ul><li><a href="Genmo.html">Genmo</a></li><li><a href="GenmoError.html">GenmoError</a></li><li><a href="InvalidDataKeyError.html">InvalidDataKeyError</a></li><li><a href="InvalidLinkError.html">InvalidLinkError</a></li><li><a href="InvalidPassageDataError.html">InvalidPassageDataError</a></li><li><a href="InvalidStoryError.html">InvalidStoryError</a></li><li><a href="LinkNotFoundError.html">LinkNotFoundError</a></li><li><a href="NoStartingNodeError.html">NoStartingNodeError</a></li><li><a href="PassageNotFoundError.html">PassageNotFoundError</a></li><li><a href="StatefulComponent.html">StatefulComponent</a></li></ul><h3>Global</h3><ul><li><a href="global.html#followLinkReducer">followLinkReducer</a></li><li><a href="global.html#getDataHelpers">getDataHelpers</a></li><li><a href="global.html#getPassageHelpers">getPassageHelpers</a></li><li><a href="global.html#inventoryHasHelper">inventoryHasHelper</a></li><li><a href="global.html#promptAnswerReducer">promptAnswerReducer</a></li><li><a href="global.html#setDataHelper">setDataHelper</a></li><li><a href="global.html#setDataReducer">setDataReducer</a></li><li><a href="global.html#updateData">updateData</a></li><li><a href="global.html#updateInventory">updateInventory</a></li><li><a href="global.html#updateInventoryReducer">updateInventoryReducer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Mar 28 2021 00:36:09 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
